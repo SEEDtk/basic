@@ -198,7 +198,7 @@ class TestLineTemplate {
         File simpleFile = new File("data", "simple.tbl");
         globals.readChoiceLists(simpleFile, "genus", "species");
         final String TEMPLATE = "What is the genus of {{genome}}?{{$tab}}{{$choices:genus:genus:4}}{{$nl}}" +
-                    "Is the species of {{genome}} s1?{{$tab}}{{$choices:YesNo:\"Yes\":3}}{{$nl}}" +
+                    "Is the species of {{genome}} s1?{{$tab}}A) Yes or B) No{{$nl}}" +
                     "What is the species of {{genome}}?{{$tab}}{{$choices:species:species:3}}";
         try (LineReader testStream = new LineReader(new File("data", "simple.txt"));
                 var inStream = FieldInputStream.create(simpleFile)) {

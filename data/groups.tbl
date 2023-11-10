@@ -1,0 +1,5 @@
+f1	f2	f3	expected
+			Hello, we have a group.
+	B		Hello, we have a group with two B.
+A		C	Hello, we have a group with one A and three C.
+A	B	C	Hello, we have a group with one A, two B, and three C.

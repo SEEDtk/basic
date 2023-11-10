@@ -1,0 +1,19 @@
+fid	type	product
+fig|211586.9.rna.45	tRNA	Pro tRNA # TRNA_Pro1
+fig|259564.8.rna.59	tRNA	tRNA-Pseudo-CGG
+fig|211586.9.rna.23	tRNA	tRNA-p-CCC
+fig|1637502.3.rna.35	rRNA	5S rRNA # 5S ribosomal RNA - 3 prime truncation
+fig|211586.9.rna.117	rRNA	23S ribosomal RNA # Sp23SH
+fig|211586.9.rna.129	rRNA	small subunit ribosomal RNA # Sp16SG
+fig|211586.9.rna.125	rRNA	5S ribosomal RNA # Sp5SG
+fig|197221.1.rna.34	tRNA	tRNA-Met-CAU
+fig|66666666.1.lrr.1	repeat_region	
+fig|1000.bs.1		null test
+fig|1002.lrr.1	repeat_region	repeat region
+fig|46507.4.rna.29	misc_RNA	Bacterial RNase P class A
+fig|100226.1.peg.6235	CDS	Hypothetical, similar to sarcosine oxidase alpha subunit, 2Fe-2S domain / Opine oxidase subunit C, 2Fe-2S iron-sulfur cluster binding
+fig|100226.1.peg.6236	CDS	Putative oxidoreductase in 4-hydroxyproline catabolic gene cluster / Opine oxidase subunit A
+fig|100226.1.peg.7566	CDS	Secreted extracellular small neutral protease
+fig|100226.1.peg.6237	CDS	1-pyrroline-4-hydroxy-2-carboxylate deaminase (EC 3.5.4.22) # predicted
+fig|100226.1.peg.5236	CDS	Dihydrolipoamide succinyltransferase E2 component of 2-oxoglutarate dehydrogenase complex (EC 2.3.1.61) / 2-oxoglutarate dehydrogenase E1 component (EC 1.2.4.2) @ 2-oxoglutarate decarboxylase (EC 4.1.1.71) @ 2-hydroxy-3-oxoadipate synthase (EC 2.2.1.5)
+	CDS	null test

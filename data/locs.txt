@@ -1,0 +1,4 @@
+patric_id	strand	start	end	value
+peg.1250	-	1241	1242	Feature peg.1250 is on the minus (-) strand at location 1241 to 1242.
+peg.1251	+	1420	1424	Feature peg.1251 is on the plus (+) strand at location 1420 to 1424.
+peg.1252	x	100	110	Feature peg.1252 is on an unknown strand at location 100 to 110.

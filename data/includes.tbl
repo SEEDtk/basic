@@ -1,0 +1,8 @@
+key	fld1	fld2	list	datum	expected
+key1	1.1	1A	calibrate	data1A	This is an important test.  We need to know if data1A works. Also, we are testing include. We have key1 dlit text.	
+key1	1.2	1B		data1B	This is an important test.  We need to know if data1B works. Also, we are testing include. We have key1 dlit text.	
+key2	2.1		D::E	data2A	This is an important test.  We need to know if data2A works. Also, we are testing include. We have key2 dlit text and more key2 dlit text.	
+key2		2B	A::B::C	data2B	This is an important test.  We need to know if data2B works. Also, we are testing include. We have key2 dlit text and more key2 dlit text.	
+key3			0	data3A	This is an important test.  We need to know if data3A works. Also, we are testing include. We have key3 dlit text, more key3 dlit text, and another key3 dlit text.	
+key3	3A	3B	1::2	data3B	This is an important test.  We need to know if data3B works. Also, we are testing include. We have key3 dlit text, more key3 dlit text, and another key3 dlit text.	
+key4	4A	4B	1::2::3	data4	This is an important test.  We need to know if data4 works. Also, we are testing include. We do not have key, but we have 1, 2, and 3.	

@@ -1,0 +1,18 @@
+a transfer RNA for Proline
+a pseudo-transfer RNA for codon CGG
+a transfer RNA of unknown type
+a 5S ribosomal RNA- 3 prime truncation
+a large subunit ribosomal RNA
+a 16S small subunit ribosomal RNA
+a 5S ribosomal RNA
+a transfer RNA for Methionine from codon CAU
+a repeat region
+
+a repeat region
+a miscellaneous RNA believed to be Bacterial RNase P class A
+a protein with 2 domains, whose products are: (1) Hypothetical, similar to sarcosine oxidase alpha subunit, 2Fe-2S domain; and (2) Opine oxidase subunit C, 2Fe-2S iron-sulfur cluster binding
+a protein with 2 domains, whose products are: (1) Putative oxidoreductase in 4-hydroxyproline catabolic gene cluster; and (2) Opine oxidase subunit A
+a protein whose product is Secreted extracellular small neutral protease
+a protein whose product is 1-pyrroline-4-hydroxy-2-carboxylate deaminase (EC 3.5.4.22)
+a protein with 2 domains, whose products are: (1) Dihydrolipoamide succinyltransferase E2 component of 2-oxoglutarate dehydrogenase complex (EC 2.3.1.61); and (2) 3 roles including (i) 2-oxoglutarate dehydrogenase E1 component (EC 1.2.4.2), (ii) 2-oxoglutarate decarboxylase (EC 4.1.1.71), and (iii) 2-hydroxy-3-oxoadipate synthase (EC 2.2.1.5)
+

@@ -1,0 +1,3 @@
+Json strings for 45043 include { "segments":["1612600..1612620", "300..400"] } and { "acc":"NC_000962" }.
+Json strings for 51299 include { "segments":["4138202..4139755"] } and { "acc":"NC_000963" }.
+Json strings for 53589 include { "segments":[] } and { "acc":"NC_000962" }.

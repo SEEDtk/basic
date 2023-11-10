@@ -1,0 +1,7 @@
+The random genera for 123 are g5, g6, g3, and g2. The random species are s3, s2, and s1.
+The random genera for 456 are g7, g1, g2, and g5. The random species are s3, s1, and s2.
+The random genera for 789 are g1, g2, g4, and g6. The random species are s2, s3, and s1.
+The random genera for 223 are g2, g5, g7, and g6. The random species are s1, s2, and s3.
+The random genera for 224 are g1, g4, g7, and g6. The random species are s3, s2, and s1.
+The random genera for 225 are g7, g1, g5, and g3. The random species are s2, s3, and s1.
+The random genera for 227 are g1, g6, g5, and g4. The random species are s3, s2, and s1.
