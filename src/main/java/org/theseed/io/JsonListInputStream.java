@@ -139,13 +139,13 @@ public class JsonListInputStream extends FieldInputStream {
                     // The next token should be the value.  It could also be an open-list bracket.
                     String value = this.getNextToken();
                     if (value.contentEquals("["))
-                        retVal.addField(key, this.parseList());
+                        retVal.setField(key, this.parseList());
                     else if (value.contentEquals("{"))
                         throw new IOException("Unsupported use of map value for key \"" + key + "\" in line " + this.getLineNumber() + ".");
                     else if (INVALID_KEYS.contains(value))
                         throw new IOException("Unexpected token \"" + value + "\" found parsing value of \"" + key + "\" in line " + this.getLineNumber() + ".");
                     else
-                        retVal.addField(key, value);
+                        retVal.setField(key, value);
                     // The next token should be a comma or end-of-record.
                     delim = this.getNextToken();
                     if (delim.contentEquals("}"))

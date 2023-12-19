@@ -143,7 +143,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
          * @param name		name of field
          * @param string	string to add
          */
-        protected void addField(String name, String string) {
+        public void setField(String name, String string) {
             int idx = FieldInputStream.this.fieldNames.indexOf(name);
             if (idx >= 0 && ! StringUtils.isBlank(string))
                 this.fields.set(idx, List.of(string));
@@ -155,7 +155,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
          * @param name		name of field
          * @param list		string list to add
          */
-        protected void addField(String name, List<String> list) {
+        public void setField(String name, List<String> list) {
             int idx = FieldInputStream.this.fieldNames.indexOf(name);
             if (idx >= 0 && list != null)
                 this.fields.set(idx, list);
