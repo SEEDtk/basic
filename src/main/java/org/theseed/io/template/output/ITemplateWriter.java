@@ -26,14 +26,19 @@ public interface ITemplateWriter {
      */
     public void write(String fileName, String key, String outString) throws IOException;
 
-   /**
+    /**
+     * This returns the number of words written.  If the writer doesn't actually produce
+     * output (which is the case for some that cache stuff in memory), it should return 0.
+     *
+     * @return the number of words written
+     */
+    public int getWordCount();
+
+    /**
      * Insure all output is written and all I/O resources are freed.
      */
     public void close();
 
-    /**
-     * Method for reading choice files.  Note all writers will support this.
-     */
     /**
      * Read in a file to create choice lists.
      *

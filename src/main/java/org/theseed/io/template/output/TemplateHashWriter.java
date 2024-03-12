@@ -115,4 +115,10 @@ public class TemplateHashWriter implements ITemplateWriter {
         return this.choiceLists.get(name);
     }
 
+    @Override
+    public int getWordCount() {
+        // We cache stuff in memory, so the return is always 0 words.
+        return 0;
+    }
+
 }
