@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.theseed.basic.ParseFailureException;
 import org.theseed.counters.CountMap;
 import org.theseed.genome.GenomeName;
 import org.theseed.genome.GenomeNameMap;
@@ -108,9 +109,9 @@ public class FidMapper {
      * @param fid			FIG ID of the feature
      * @param function		functional assignment of the feature
      *
-     * @throws IllegalStateException
+     * @throws ParseFailureException
      */
-    public String getMagicFid(String fid, String function) throws IllegalStateException {
+    public String getMagicFid(String fid, String function) throws ParseFailureException {
         // Check for a cached result.
         String retVal = this.featureIdMap.get(fid);
         if (retVal == null) {
@@ -121,7 +122,7 @@ public class FidMapper {
             else {
                 // Group 1 is the genome ID.  Insure it's the current genome.
                 if (! m.group(1).equals(this.currGenomeId))
-                    throw new IllegalStateException("Feature \"" + fid + "\" is not from the current genome.");
+                    throw new ParseFailureException("Feature \"" + fid + "\" is not from the current genome.");
                 else if (m.group(2).equals("peg")) {
                     // Insure we have a function.
                     String pegFunction = (StringUtils.isBlank(function) ? "hypothetical protein" : function);
@@ -143,6 +144,23 @@ public class FidMapper {
                 this.featureIdMap.put(fid, retVal);
             }
         }
+        return retVal;
+    }
+
+    /**
+     * This retrieves an existing feature identifier given only the feature ID.  If the
+     * feature does not have a magic word ID yet, it is an error.
+     *
+     * @param fid	feature ID to translate
+     *
+     * @return the magic word identifier for the feature
+     *
+     * @throws ParseFailureException
+     */
+    public String getMagicFid(String fid) throws ParseFailureException {
+        String retVal = this.featureIdMap.get(fid);
+        if (retVal == null)
+            throw new ParseFailureException("Feature ID \"" + fid + "\" used before it is defined.");
         return retVal;
     }
 

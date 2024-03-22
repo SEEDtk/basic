@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.theseed.basic.ParseFailureException;
 import org.theseed.io.FieldInputStream;
 
 /**
@@ -27,7 +28,7 @@ class TestFidMapper {
             "fig|83332.12.peg.3669", "fig|83332.12.peg.1941", "fig|83332.12.rna.31");
 
     @Test
-    void testFidMapper() throws IOException {
+    void testFidMapper() throws IOException, ParseFailureException {
         FidMapper fidMapper = new FidMapper();
         // Set up a genome.
         fidMapper.setup("83332.12", "Mycobacterium tuberculosis H37Rv");
