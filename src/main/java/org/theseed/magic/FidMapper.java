@@ -149,19 +149,14 @@ public class FidMapper {
 
     /**
      * This retrieves an existing feature identifier given only the feature ID.  If the
-     * feature does not have a magic word ID yet, it is an error.
+     * feature does not have a magic word ID yet, it returns NULL;
      *
      * @param fid	feature ID to translate
      *
      * @return the magic word identifier for the feature
-     *
-     * @throws ParseFailureException
      */
-    public String getMagicFid(String fid) throws ParseFailureException {
-        String retVal = this.featureIdMap.get(fid);
-        if (retVal == null)
-            throw new ParseFailureException("Feature ID \"" + fid + "\" used before it is defined.");
-        return retVal;
+    public String getMagicFid(String fid)  {
+        return this.featureIdMap.get(fid);
     }
 
     /**
@@ -180,6 +175,27 @@ public class FidMapper {
         else if (count > 1)
             word += String.valueOf(count);
         return word;
+    }
+
+    /**
+     * Return the genome magic-word ID for a given genome.
+     *
+     * @param oldId		original genome ID
+     *
+     * @return the magic word ID, or NULL if it is not known
+     */
+    public String getMagicGenomeId(String oldId) {
+        return this.genomeIdMap.get(oldId);
+    }
+
+    /**
+     * Store a mapping from a feature alias to its magic word ID.
+     *
+     * @param featureId		feature ID alias
+     * @param fidWord		corresponding magic word ID.
+     */
+    public void saveFidAlias(String featureId, String fidWord) {
+        this.featureIdMap.put(featureId, fidWord);
     }
 
 }

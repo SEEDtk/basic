@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.theseed.basic.ParseFailureException;
 import org.theseed.io.FieldInputStream;
 import org.theseed.io.template.output.TemplateHashWriter;
-import org.theseed.magic.FidMapper;
 
 
 
@@ -95,8 +94,6 @@ public class LineTemplate {
     private TemplateHashWriter globals;
     /** randomizer */
     private Random rand;
-    /** feature ID mapper */
-    private FidMapper fidMapper;
     /** search pattern for variables */
     protected static final Pattern VARIABLE = Pattern.compile("(.*?)\\{\\{(.+?)\\}\\}(.*)");
     /** search pattern for special commands */
@@ -108,16 +105,12 @@ public class LineTemplate {
      * @param inStream	tab-delimited file stream
      * @param template	template string
      * @param globals 	global-data structure
-     * @param fidMap	feature ID mapper to use
      *
      * @throws IOException
      * @throws ParseFailureException
      */
-    public LineTemplate(FieldInputStream inStream, String template, TemplateHashWriter globals,
-            FidMapper fidMap)
+    public LineTemplate(FieldInputStream inStream, String template, TemplateHashWriter globals)
             throws IOException, ParseFailureException {
-        // Store the feature ID mapper.
-        this.fidMapper = fidMap;
         // Set up the randomizer.
         this.rand = new Random();
         // Save the global-data cache.
@@ -267,14 +260,6 @@ public class LineTemplate {
                             newCommand = new JsonCommand(this, inStream, m2.group(2));
                             this.addToTop(newCommand);
                             break;
-                        case "fid" :
-                            // This command emits a useful feature ID.
-                            newCommand = new FidCommand(this, inStream, m2.group(2));
-                            break;
-                        case "gStore" :
-                            // This command store the genome ID and name.
-                            newCommand = new GStoreCommand(this, inStream, m2.group(2));
-                            break;
                         default :
                             throw new ParseFailureException("Unknown special command \"" + m2.group(1) + "\".");
                         }
@@ -313,49 +298,6 @@ public class LineTemplate {
     protected void setSeed(long newSeed) {
         this.rand = new Random(newSeed);
     }
-
-    /**
-     * Specify a feature ID mapper for the $fid command.
-     *
-     * @param fidMap	feature ID mapper to use for this template
-     */
-    public void setFidMapper(FidMapper fidMap) {
-        this.fidMapper = fidMap;
-    }
-
-    /**
-     * Compute the magic-word identifier for a feature when the function is known.
-     *
-     * @param fid	FIG feature ID
-     * @param fun	functional assignment
-     *
-     * @return the magic word feature ID
-     *
-     * @throws ParseFailureException
-     */
-    public String getMagicFid(String fid, String fun) throws ParseFailureException {
-        if (this.fidMapper == null)
-            throw new ParseFailureException("No FidMapper assigned during request for identifier of \""
-                    + fid + "\".");
-        return this.fidMapper.getMagicFid(fid, fun);
-    }
-
-    /**
-     * Compute the magic-word identifier for a feature when the function is not known.
-     *
-     * @param fid	FIG feature ID
-     *
-     * @return the magic word feature ID
-     *
-     * @throws ParseFailureException
-     */
-    public String getMagicFid(String fid) throws ParseFailureException {
-        if (this.fidMapper == null)
-            throw new ParseFailureException("No FidMapper assigned during request for identifier of \""
-                    + fid + "\".");
-        return this.fidMapper.getMagicFid(fid);
-    }
-
 
     /**
      * Add a new subcommand to the top command on the compile stack.
@@ -559,13 +501,4 @@ public class LineTemplate {
         return this.globals.getChoices(name);
     }
 
-    /**
-     * Set up a new genome for the current FID mapper.
-     *
-     * @param gID		ID of new genome
-     * @param gName		name of new genome
-     */
-    public void storeMapperGenome(String gID, String gName) {
-        this.fidMapper.setup(gID, gName);
-    }
 }

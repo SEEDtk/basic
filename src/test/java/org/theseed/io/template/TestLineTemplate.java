@@ -67,7 +67,7 @@ class TestLineTemplate {
                     "{{$clause:genus}}the genus {{genus}}{{$end}}";
         try (var inStream = FieldInputStream.create(new File("data", "genomes10.tbl"));
                 var testStream = new LineReader(new File("data", "genomes10.txt"))) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             Iterator<String> testIter = testStream.iterator();
             int i = 1;
             for (var line : inStream) {
@@ -84,7 +84,7 @@ class TestLineTemplate {
         final String TEMPLATE = "{{$if:type:fid}}{{$product:product:type}}{{$fi}}";
         try (var inStream = FieldInputStream.create(new File("data", "products.tbl"));
                 var testStream = new LineReader(new File("data", "products.txt"))) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             Iterator<String> testIter = testStream.iterator();
             int i = 1;
             for (var line : inStream) {
@@ -103,7 +103,7 @@ class TestLineTemplate {
         try (var inStream = FieldInputStream.create(new File("data", "locs.txt"))) {
             int fidIdx = inStream.findField("patric_id");
             int valIdx = inStream.findField("value");
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             for (var record : inStream) {
                 String output = xlate.apply(record);
                 String fid = record.get(fidIdx);
@@ -122,7 +122,7 @@ class TestLineTemplate {
         try (var inStream = FieldInputStream.create(groupFile)) {
             int i = 1;
             int testIdx = inStream.findField("expected");
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             for (var line : inStream) {
                 String output = xlate.apply(line);
                 String test = line.get(testIdx);
@@ -135,7 +135,7 @@ class TestLineTemplate {
                 + "{{$clause:f2}}This is the {{f2}} question."
                 + "{{$clause:f3}}This is the {{f3}} question.{{$end}}";
         try (var inStream = FieldInputStream.create(groupFile)) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             var line = inStream.next();
             String output = xlate.apply(line);
             assertThat(output, equalTo(""));
@@ -167,7 +167,7 @@ class TestLineTemplate {
                 "{{$else}}{{$if:list}}We do not have key, but we have {{$list:list}}" +
                 "{{$fi}}{{$fi}}.";
         try (var inStream = FieldInputStream.create(new File("data", "includes.tbl"))) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             int i = 1;
             int testIdx = inStream.findField("expected");
             for (var line : inStream) {
@@ -185,7 +185,7 @@ class TestLineTemplate {
         TemplateHashWriter globals = new TemplateHashWriter();
         final String TEMPLATE = "This tests the {{fld1}} null ({{$0}}), tab ({{$tab}}), and new-line {{$nl}} commands.";
         try (var inStream = FieldInputStream.create(new File("data", "single.tbl"))) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             var line = inStream.next();
             String output = xlate.apply(line);
             assertThat(output, equalTo("This tests the a null (), tab (\t), and new-line \n commands."));
@@ -202,7 +202,7 @@ class TestLineTemplate {
                     "What is the species of {{genome}}?{{$tab}}{{$choices:species:species:3}}";
         try (LineReader testStream = new LineReader(new File("data", "simple.txt"));
                 var inStream = FieldInputStream.create(simpleFile)) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             xlate.setSeed(12345679L);
             int i = 1;
             for (var line : inStream) {
@@ -223,7 +223,7 @@ class TestLineTemplate {
         final String TEMPLATE = "The random genera for {{genome}} are {{$list:sample(genus,4)}}. The random species are {{$list:sample(species,4)}}.";
         try (LineReader testStream = new LineReader(new File("data", "sample.txt"));
                 var inStream = FieldInputStream.create(simpleFile)) {
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             xlate.setSeed(12345679L);
             for (var line : inStream) {
                 String output = xlate.apply(line);
@@ -239,7 +239,7 @@ class TestLineTemplate {
         try (var inStream = FieldInputStream.create(new File("data", "genome_feature.json"));
                 var testStream = new LineReader(new File("data", "features3.txt"))) {
             final String TEMPLATE = "Json strings for {{p2_feature_id}} include {{$json:list:segments}} and {{$json:string:acc:accession}}.";
-            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals, null);
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             Iterator<String> testIter = testStream.iterator();
             for (var line : inStream) {
                 String output = xlate.apply(line);
