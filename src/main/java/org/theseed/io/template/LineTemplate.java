@@ -67,16 +67,9 @@ import org.theseed.io.template.output.TemplateHashWriter;
  *  choices		outputs randomly-selected answers to a multiple-choice question.  Takes as input a choice-set
  *  			name, the correct answer (as a column name or as a literal in quotes), and the number of answers desired.
  *  json		takes as input a type name, a tag name, and a field expression.  It outputs a JSON string.
- *  fid			generates a useful feature ID from a real feature ID
- *  gStore		store the genome ID and name mapping for future features
  *
  * The template string is parsed into a list of commands.  This command list can then be processed rapidly
  * to form the result string.
- *
- * The $fid command is exceptionally complicated.  At some point, the FidMapper must be created and attached
- * to the template.  Before any features are expressed, the genome must be set up in the FidMapper using the
- * $gid command.  The first time a feature is expressed, it must include the product and the FIG ID.  After
- * that, only the patric ID is needed.
  *
  * @author Bruce Parrello
  *

@@ -246,6 +246,15 @@ class TestLineTemplate {
                 assertThat(output, equalTo(testIter.next()));
             }
         }
+        try (var inStream = FieldInputStream.create(new File("data", "tiny.json"))) {
+            final String TEMPLATE = "{{$if:feature_word_a:feature_word_b}} "
+                    + "In genome {{genome_name_a}}, the {{interactor_type_a}} {{feature_word_a}} has a {{interaction_type}} with the {{interactor_type_b}} {{feature_word_b}}. "
+                    + "{{$fi}}";
+            LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
+            var line = inStream.next();
+            String output = xlate.apply(line);
+            assertThat(output, equalTo(""));
+        }
 
     }
 
