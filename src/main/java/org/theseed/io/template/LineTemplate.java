@@ -67,6 +67,9 @@ import org.theseed.io.template.output.TemplateHashWriter;
  *  choices		outputs randomly-selected answers to a multiple-choice question.  Takes as input a choice-set
  *  			name, the correct answer (as a column name or as a literal in quotes), and the number of answers desired.
  *  json		takes as input a type name, a tag name, and a field expression.  It outputs a JSON string.
+ *  signWord	outputs one of three words depending on whether or not the field expression value is negative,
+ *  			zero, or positive.  Takes as input a field expression, the output string for a negative value,
+ *  			the output string for a zero value, and the output string for a positive value
  *
  * The template string is parsed into a list of commands.  This command list can then be processed rapidly
  * to form the result string.
@@ -251,6 +254,12 @@ public class LineTemplate {
                         case "json" :
                             // This command presents a JSON string.
                             newCommand = new JsonCommand(this, inStream, m2.group(2));
+                            this.addToTop(newCommand);
+                            break;
+                        case "signWord" :
+                            // This command chooses an output string based on the sign of the
+                            // input expression (when parsed as a floating-point number).
+                            newCommand = new SignWordCommand(this, inStream, m2.group(2));
                             this.addToTop(newCommand);
                             break;
                         default :

@@ -258,11 +258,15 @@ class TestLineTemplate {
                     + "{{$if:singleton(source_db)}}error{{$else}}null detection{{$fi}} "
                     + "{{$if:singleton(interaction_type)}}error{{$else}}multi detection{{$fi}} "
                     + "{{singleton(interaction_type)}} {{$if:eq(taxon_id_a, 83332)}}eq worked{{$else}}error{{$fi}} "
-                    + "{{$if:eq(taxon_id_b, 83332}}error{{$else}}ne worked{{$fi}}";
+                    + "{{$if:eq(taxon_id_b, 83332}}error{{$else}}ne worked{{$fi}} "
+                    + "{{$signWord:refseq_locus_tag_a:minus:zero:plus}} {{$signWord:refseq_locus_tag_b:minus1:zero1:plus1}} "
+                    + "{{$signWord:negative:minus2:zero2:plus2}} {{$signWord:zero:minus3:zero3:plus3}} "
+                    + "{{$signWord:positive:minus4:zero4:plus4}}";
             xlate = new LineTemplate(inStream, TEMPLATE, globals);
             line = inStream.next();
             output = xlate.apply(line);
-            assertThat(output, equalTo("singleton detection null detection multi detection association eq worked ne worked"));
+            assertThat(output, equalTo("singleton detection null detection multi detection association eq worked ne worked "
+                    + "zero zero1 minus2 zero3 plus4"));
         }
 
     }

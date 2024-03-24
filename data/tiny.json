@@ -78,6 +78,9 @@
         "17652161"
     ],
     "gene_a":"lpd",
+    "negative":-1.06,
+    "zero":0.0,
+    "positive":4.6,
     "refseq_locus_tag_a":"Rv0462",
     "refseq_locus_tag_b":"",
     "date_modified":"2019-04-26T19:25:12.398Z",
