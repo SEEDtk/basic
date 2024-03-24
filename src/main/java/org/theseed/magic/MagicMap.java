@@ -49,6 +49,8 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
             Stream.of("and", "or", "the", "a", "of", "in", "an", "to", "on", "").collect(Collectors.toCollection(HashSet::new));
     /** parentheticals */
     private static final Pattern PARENTHETICAL = Pattern.compile("\\(.*?\\)");
+    /** inside of a parenthetical */
+    private static final Pattern PARENTHESIZED = Pattern.compile("\\((.+)\\)");
     /** things that are not digits and letters */
     private static final String PUNCTUATION = "\\W+";
     /** separate prefix from suffix */
@@ -74,8 +76,10 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
      * @return a shorter representation of the string
      */
     public static String condense(String full) {
-        // Remove all parentheticals.
-        String noParens = RegExUtils.replaceAll(full.toLowerCase(),
+        // Remove outer parentheses, then remove all remaining parentheticals.
+        Matcher m = PARENTHESIZED.matcher(full);
+        String noParens = (m.matches() ? m.group(1) : full);
+        noParens = RegExUtils.replaceAll(noParens.toLowerCase(),
                 PARENTHETICAL, " ");
         // Separate into words.
         String[] words = noParens.split(PUNCTUATION);

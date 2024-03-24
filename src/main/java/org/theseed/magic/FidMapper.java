@@ -9,6 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.theseed.basic.ParseFailureException;
 import org.theseed.counters.CountMap;
 import org.theseed.genome.GenomeName;
@@ -33,6 +35,8 @@ import org.theseed.proteins.FunctionMap;
 public class FidMapper {
 
     // FIELDS
+    /** logging facility */
+    protected static Logger log = LoggerFactory.getLogger(FidMapper.class);
     /** functional assignment name map */
     private FunctionMap functionMap;
     /** genome name map */
@@ -133,6 +137,8 @@ public class FidMapper {
                     // otherwise we append the count.
                     String funWord = funObj.getId();
                     final int count = this.funCounters.count(funWord);
+                    if (funWord.length() < 1)
+                        log.error("Zero-length function word found for function \"{}\" in feature {}.", pegFunction, fid);
                     funWord = suffixCount(funWord, count);
                     // Now build the whole string.
                     retVal = this.currGenomeWord + funWord;
