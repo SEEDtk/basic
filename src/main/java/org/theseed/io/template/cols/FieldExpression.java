@@ -64,6 +64,12 @@ public abstract class FieldExpression {
             case "sample" :
                 retVal = new SampleFieldExpression(template, parms);
                 break;
+            case "eq" :
+                retVal = new EqualTestFieldExpression(template, inStream, parms);
+                break;
+            case "singleton" :
+                retVal = new SingletonFieldExpression(template, inStream, parms);
+                break;
             default :
                 throw new ParseFailureException("Invalid field-expression function \"" + m.group(1) + "\".");
             }

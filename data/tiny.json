@@ -42,5 +42,50 @@
     "domain_a":"Bacteria",
     "category":"HPI",
     "gene_b":"CORO1A"
+},
+{
+    "date_inserted":"2019-04-26T19:25:12.398Z",
+    "genome_word_a":"MycoTubeH37r",
+    "evidence":[
+        "experimental"
+    ],
+    "detection_method":[
+        "experimental interaction detection"
+    ],
+    "interaction_type":[
+        "association",
+        "predicted interaction"
+    ],
+    "interactor_a":"fig|83332.12.peg.510",
+    "interactor_b":"RefSeq.9606.33.NC_000016.CDS.30185210.30188964.fwd",
+    "genome_id_a":"83332.12",
+    "genome_id_b":"9606.33",
+    "interactor_type_a":"Protein",
+    "id":"3ff156ca-7650-4732-a353-9b03dae0bd5d",
+    "interactor_type_b":"Protein",
+    "taxon_id_b":9606,
+    "genome_name_b":"Homo sapiens",
+    "taxon_id_a":83332,
+    "genome_name_a":"Mycobacterium tuberculosis H37Rv",
+    "source_db":[
+    ],
+    "feature_word_a":"MycoTubeH37rDihyDehy2n1",
+    "interactor_desc_b":"coronin-1A isoform X1",
+    "feature_id_b":"RefSeq.9606.33.NC_000016.CDS.30185210.30188964.fwd",
+    "feature_id_a":"PATRIC.83332.12.NC_000962.CDS.552614.554008.fwd",
+    "interactor_desc_a":"Dihydrolipoamide dehydrogenase of pyruvate dehydrogenase complex (EC 1.8.1.4)",
+    "pmid":[
+        "17652161"
+    ],
+    "gene_a":"lpd",
+    "refseq_locus_tag_a":"Rv0462",
+    "refseq_locus_tag_b":"",
+    "date_modified":"2019-04-26T19:25:12.398Z",
+    "_version_":1694983479151820802,
+    "domain_b":"Primates",
+    "domain_a":"Bacteria",
+    "category":"HPI",
+    "gene_b":"CORO1A"
 }
+
 ]

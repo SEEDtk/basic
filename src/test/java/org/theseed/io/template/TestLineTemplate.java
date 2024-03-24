@@ -247,13 +247,22 @@ class TestLineTemplate {
             }
         }
         try (var inStream = FieldInputStream.create(new File("data", "tiny.json"))) {
-            final String TEMPLATE = "{{$if:feature_word_a:feature_word_b}} "
+            String TEMPLATE = "{{$if:feature_word_a:feature_word_b}} "
                     + "In genome {{genome_name_a}}, the {{interactor_type_a}} {{feature_word_a}} has a {{interaction_type}} with the {{interactor_type_b}} {{feature_word_b}}. "
                     + "{{$fi}}";
             LineTemplate xlate = new LineTemplate(inStream, TEMPLATE, globals);
             var line = inStream.next();
             String output = xlate.apply(line);
             assertThat(output, equalTo(""));
+            TEMPLATE = "{{$if:singleton(detection_method)}}singleton detection{{$else}}error{{$fi}} "
+                    + "{{$if:singleton(source_db)}}error{{$else}}null detection{{$fi}} "
+                    + "{{$if:singleton(interaction_type)}}error{{$else}}multi detection{{$fi}} "
+                    + "{{singleton(interaction_type)}} {{$if:eq(taxon_id_a, 83332)}}eq worked{{$else}}error{{$fi}} "
+                    + "{{$if:eq(taxon_id_b, 83332}}error{{$else}}ne worked{{$fi}}";
+            xlate = new LineTemplate(inStream, TEMPLATE, globals);
+            line = inStream.next();
+            output = xlate.apply(line);
+            assertThat(output, equalTo("singleton detection null detection multi detection association eq worked ne worked"));
         }
 
     }
