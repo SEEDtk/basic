@@ -6,9 +6,12 @@ package org.theseed.io.template.output;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.StringTokenizer;
-
 import org.theseed.basic.ParseFailureException;
+
+import com.knuddels.jtokkit.Encodings;
+import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingRegistry;
+import com.knuddels.jtokkit.api.EncodingType;
 
 /**
  * This is a template writer that simply echoes the template string to an output file.
@@ -18,8 +21,10 @@ public class TemplatePrintWriter implements ITemplateWriter, AutoCloseable {
     // FIELDS
     /** output print writer */
     private PrintWriter writer;
-    /** word counter */
-    private int wordCount;
+    /** token counter */
+    private int tokenCount;
+    /** token encoder */
+    private Encoding encoder;
 
     /**
      * Construct a template print writer for a specified output file.
@@ -30,16 +35,19 @@ public class TemplatePrintWriter implements ITemplateWriter, AutoCloseable {
      */
     public TemplatePrintWriter(File fileName) throws IOException {
         this.writer = new PrintWriter(fileName);
-        this.wordCount = 0;
+        // Set up the token counter.
+        this.tokenCount = 0;
+        EncodingRegistry registry = Encodings.newDefaultEncodingRegistry();
+        this.encoder = registry.getEncoding(EncodingType.CL100K_BASE);
     }
 
     @Override
     public void write(String fileName, String key, String outString) throws IOException {
         // Write the string.
         this.writer.println(outString);
-        // Count the words.
-        StringTokenizer tokens = new StringTokenizer(outString);
-        this.wordCount += tokens.countTokens();
+        // Count the tokens.
+        int tokens = this.encoder.countTokens(outString);
+        this.tokenCount += tokens;
     }
 
     @Override
@@ -54,8 +62,8 @@ public class TemplatePrintWriter implements ITemplateWriter, AutoCloseable {
     }
 
     @Override
-    public int getWordCount() {
-        return this.wordCount;
+    public long getTokenCount() {
+        return this.tokenCount;
     }
 
 }

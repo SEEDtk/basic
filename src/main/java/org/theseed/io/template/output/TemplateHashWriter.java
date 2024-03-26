@@ -116,9 +116,9 @@ public class TemplateHashWriter implements ITemplateWriter {
     }
 
     @Override
-    public int getWordCount() {
+    public long getTokenCount() {
         // We cache stuff in memory, so the return is always 0 words.
-        return 0;
+        return 0L;
     }
 
 }
