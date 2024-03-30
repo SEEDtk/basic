@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.theseed.basic.ParseFailureException;
@@ -387,31 +388,36 @@ public class LineTemplate {
     /**
      * Form a list of phrases into an english-language list using a conjunction.
      *
-     * @param conjunction	conjunction for the final phrase
+     * @param conjunction	conjunction for the final phrase ("nl" for a list of output lines)
      * @param phrases		list of phrases
      *
      * @return a string representation of the list
      */
     public static String conjunct(String conjunction, List<String> phrases) {
         String retVal;
-        final int n = phrases.size() - 1;
-        switch (phrases.size()) {
-        case 0:
-            retVal = "";
-            break;
-        case 1:
-            retVal = phrases.get(0);
-            break;
-        case  2:
-            retVal = phrases.get(0) + " " + conjunction + " " +  phrases.get(1);
-            break;
-        default:
-            //  Here we need to assemble the phrases with the conjunction between the last two.
-            int len = 10 + phrases.size() * 2 + phrases.stream().mapToInt(x -> x.length()).sum();
-            StringBuilder buffer = new StringBuilder(len);
-            IntStream.range(0, n).forEach(i -> buffer.append(phrases.get(i)).append(", "));
-            buffer.append(conjunction).append(" ").append(phrases.get(n));
-            retVal = buffer.toString();
+        if (conjunction.contentEquals("nl")) {
+            // here we have the special case of the NL conjunction, indicating we output the list as a set of text lines.
+            retVal = StringUtils.join(phrases, '\n');
+        } else {
+            final int n = phrases.size() - 1;
+            switch (phrases.size()) {
+            case 0:
+                retVal = "";
+                break;
+            case 1:
+                retVal = phrases.get(0);
+                break;
+            case  2:
+                retVal = phrases.get(0) + " " + conjunction + " " +  phrases.get(1);
+                break;
+            default:
+                //  Here we need to assemble the phrases with the conjunction between the last two.
+                int len = 10 + phrases.size() * 2 + phrases.stream().mapToInt(x -> x.length()).sum();
+                StringBuilder buffer = new StringBuilder(len);
+                IntStream.range(0, n).forEach(i -> buffer.append(phrases.get(i)).append(", "));
+                buffer.append(conjunction).append(" ").append(phrases.get(n));
+                retVal = buffer.toString();
+            }
         }
         return retVal;
     }
