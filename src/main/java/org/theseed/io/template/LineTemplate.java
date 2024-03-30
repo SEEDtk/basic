@@ -116,7 +116,6 @@ public class LineTemplate {
         this.compileStack = new ArrayDeque<TemplateCommand>();
         this.compileStack.push(new BlockCommand(this,"block"));
         final int len = template.length();
-        log.info("Compiling {}-character template string.", len);
         // We parse the template into tokens.  There are literals, variables, and commands.  The unparsed section
         // of the string is stored as the residual.  We set up a try-block so we can output the neighborhood of the
         // error.
