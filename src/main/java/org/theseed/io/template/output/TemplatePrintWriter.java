@@ -44,7 +44,10 @@ public class TemplatePrintWriter implements ITemplateWriter, AutoCloseable {
     @Override
     public void write(String fileName, String key, String outString) throws IOException {
         // Write the string.
-        this.writer.println(outString);
+        this.writer.print(outString);
+        // Write out an EOL if there is not already one in the string.
+        if (outString.length() > 0 && ! outString.endsWith("\n"))
+            this.writer.println();
         // Count the tokens.
         int tokens = this.encoder.countTokens(outString);
         this.tokenCount += tokens;
