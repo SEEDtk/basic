@@ -184,7 +184,7 @@ public class CountMap<K> {
      *
      * @param key	key for the counter of interest
      */
-    private Count getCounter(K key) {
+    public Count getCounter(K key) {
         Count retVal;
         retVal = this.map.get(key);
         if (retVal == null) {
