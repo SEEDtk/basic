@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -184,6 +186,27 @@ public abstract class BaseProcessor implements ICommand {
         } else
             retVal = stream;
         return retVal;
+    }
+
+    /**
+     * Display the sub-commands for this application with a short description.
+     *
+     * @param commands	a string array containing each sub-command followed by its description
+     */
+    public static void showCommands(String[] commands) {
+        System.err.println("Available sub-commands.");
+        // Our first task is to sort the commands and figure out the length of the longest.
+        var commandMap = new TreeMap<String, String>();
+        int maxLen = 0;
+        for (int i = 0; i < commands.length; i += 2) {
+            commandMap.put(commands[i], commands[i+1]);
+            if (commands[i].length() > maxLen)
+                maxLen = commands[i].length();
+        }
+        // Now write out the commands.
+        final int tabSize = maxLen + 2;
+        for (var mapEntry : commandMap.entrySet())
+            System.err.println(StringUtils.rightPad(mapEntry.getKey(), tabSize) + mapEntry.getValue());
     }
 
 }
