@@ -51,7 +51,7 @@ public class JsonListInputStream extends FieldInputStream {
      */
     private void initialize() throws IOException {
         // Initialize to an empty tokenizer, which is permanent end-of-file.
-        this.tokenIter = EMPTY_LIST.iterator();
+        this.tokenIter = Attribute.EMPTY_LIST.iterator();
         // Open the main list.
         String possibleOpen = this.getNextToken();
         if (! possibleOpen.contentEquals("["))
@@ -74,7 +74,7 @@ public class JsonListInputStream extends FieldInputStream {
             possibleOpen = this.getNextToken();
         if (possibleOpen.contentEquals("]")) {
             // Here we've reached the end of the main list.  Insure we have end-of-file condition.
-            this.tokenIter = EMPTY_LIST.iterator();
+            this.tokenIter = Attribute.EMPTY_LIST.iterator();
         } else if (! possibleOpen.contentEquals("{")) {
             // Here we have found something that doesn't belong.
             throw new IOException("Unexpected token \"" + possibleOpen + "\" in line " + this.getLineNumber() + ".");

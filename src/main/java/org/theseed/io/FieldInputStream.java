@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalInt;
@@ -38,8 +38,6 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
     protected static Logger log = LoggerFactory.getLogger(FieldInputStream.class);
     /** list of field names found in each record, in order */
     private List<String> fieldNames;
-    /** delimiter for converting a list to a single string */
-    private String delim;
     /** active line reader */
     private LineReader reader;
     /** current input stream */
@@ -48,8 +46,6 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
     private boolean fieldsLocked;
     /** ordinal number of current line */
     private int lineNumber;
-    /** empty string list */
-    protected static final List<String> EMPTY_LIST = Collections.emptyList();
 
     /**
      * Enumeration for types of field-input stream files.
@@ -118,9 +114,9 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
             for (int i = 0; i < fieldStrings.length; i++) {
                 String field = fieldStrings[i];
                 if (StringUtils.isBlank(field))
-                    this.fields.add(EMPTY_LIST);
+                    this.fields.add(Attribute.EMPTY_LIST);
                 else {
-                    List<String> value = Arrays.asList(StringUtils.split(field, FieldInputStream.this.delim));
+                    List<String> value = Arrays.asList(StringUtils.split(field, Attribute.DELIM));
                     this.fields.add(value);
                 }
             }
@@ -134,7 +130,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
         public Record(int n) {
             this.fields = new ArrayList<List<String>>(n);
             for (int i = 0; i < n; i++)
-                this.fields.add(EMPTY_LIST);
+                this.fields.add(Attribute.EMPTY_LIST);
         }
 
         /**
@@ -182,7 +178,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
         private String getString(int colIdx) {
             if (colIdx < 0 || colIdx >= fields.size())
                 throw new IllegalArgumentException("Invalid column index " + Integer.toString(colIdx) + " used for field-input stream.");
-            return StringUtils.join(this.fields.get(colIdx), FieldInputStream.this.delim);
+            return StringUtils.join(this.fields.get(colIdx), Attribute.DELIM);
         }
 
         /**
@@ -229,31 +225,8 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
         public boolean getFlag(int colIdx) {
             if (colIdx < 0 || colIdx >= fields.size())
                 throw new IllegalArgumentException("Invalid column index " + Integer.toString(colIdx) + " used for field-input stream.");
-            boolean retVal;
             List<String> colValue = this.fields.get(colIdx);
-            if (colValue.size() > 1)
-                retVal = true;
-            else if (colValue.size() < 1)
-                retVal = false;
-            else {
-                String text = colValue.get(0);
-                if (text.isBlank())
-                    retVal = false;
-                else {
-                    String normalized = text.toLowerCase();
-                    switch (normalized) {
-                    case "n" :
-                    case "no" :
-                    case "0" :
-                    case "f" :
-                    case "false" :
-                        retVal = false;
-                        break;
-                    default :
-                        retVal = true;
-                    }
-                }
-            }
+            boolean retVal = Attribute.analyzeBoolean(colValue);
             return retVal;
         }
 
@@ -272,7 +245,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
          * Add an empty-list field at the end.  This is used to insure we have enough fields.
          */
         protected void addField() {
-            this.fields.add(EMPTY_LIST);
+            this.fields.add(Attribute.EMPTY_LIST);
         }
 
     }
@@ -330,8 +303,6 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
         this.lineIter = this.reader.iterator();
         // Initialize the field-name list.
         this.fieldNames = new ArrayList<String>();
-        // Specify the default flattening delimiter for lists.
-        this.delim = "::";
         // Denote that field names are unlocked.
         this.fieldsLocked = false;
         // Denote that we have not read any lines.
@@ -389,22 +360,6 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    /**
-     * @return the delimiter used to flatten lists to strings
-     */
-    public String getDelim() {
-        return this.delim;
-    }
-
-    /**
-     * Specify a new delimiter for flattening lists to strings.
-     *
-     * @param delim 	the new delimiter to use
-     */
-    public void setDelim(String delim) {
-        this.delim = delim;
     }
 
     /**

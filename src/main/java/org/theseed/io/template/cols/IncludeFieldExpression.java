@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.theseed.basic.ParseFailureException;
+import org.theseed.io.Attribute;
 import org.theseed.io.FieldInputStream;
 import org.theseed.io.FieldInputStream.Record;
 import org.theseed.io.template.LineTemplate;
@@ -31,8 +32,6 @@ public class IncludeFieldExpression extends FieldExpression {
     private String fileName;
     /** name of the key column */
     private String colName;
-    /** list-join delimiter */
-    private String delim;
 
     /**
      * Construct a field-expression for retrieving strings from the global cache.
@@ -49,8 +48,6 @@ public class IncludeFieldExpression extends FieldExpression {
         // Save the column name and compute the index.
         this.colName = parms[1];
         this.colIdx = template.findField(this.colName, inStream);
-        // Save the delimiter.
-        this.delim = inStream.getDelim();
     }
 
     @Override
@@ -68,7 +65,7 @@ public class IncludeFieldExpression extends FieldExpression {
     @Override
     public String get(Record line) {
         List<String> values = this.getList(line);
-        return StringUtils.join(values, this.delim);
+        return StringUtils.join(values, Attribute.DELIM);
     }
 
     @Override
