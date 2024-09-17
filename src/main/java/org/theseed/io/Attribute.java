@@ -43,6 +43,13 @@ public class Attribute {
     }
 
     /**
+     * Construct a null attribute.
+     */
+    public Attribute() {
+        this.values = EMPTY_LIST;
+    }
+
+    /**
      * @return this attribute as a string
      */
     public String get() {
