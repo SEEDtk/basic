@@ -1,0 +1,28 @@
+{
+  "response":{
+    "numFound":1,
+    "start":0,
+    "maxScore":8.279702,
+    "numFoundExact":true,
+    "docs":[{
+      "accession":"GM881283",
+      "annotation":"RefSeq",
+      "date_inserted":"2021-01-11T23:26:38.074Z",
+      "date_modified":"2021-01-11T23:26:38.074Z",
+      "end":16236,
+      "feature_id":"RefSeq.11159.8.GM881283.source.1.16236.fwd",
+      "feature_type":"source",
+      "genome_id":"11159.8",
+      "genome_name":"Paramyxovirinae",
+      "location":"1..16236",
+      "owner":"BVBRC@patricbrc.org",
+      "public":true,
+      "sequence_id":"11159.8.con.0001",
+      "start":1,
+      "strand":"+",
+      "taxon_id":11159,
+      "segments":["1..16236"],
+      "_version_":1809046319537324035
+    }]
+  }
+}
