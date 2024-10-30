@@ -119,7 +119,7 @@ public class JsonFileDir implements Iterable<File> {
      * @param writer	output print writer
      */
     public static void writeJson(JsonArray outJson, PrintWriter writer) {
-        log.info("Writing json for {}-element list.", outJson.size());
+        log.debug("Writing json for {}-element list.", outJson.size());
         writer.println("[");
         Iterator<Object> iter = outJson.iterator();
         boolean moreLeft = iter.hasNext();
