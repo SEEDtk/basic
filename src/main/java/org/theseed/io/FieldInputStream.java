@@ -18,6 +18,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.theseed.json.JsonListInputStream;
 
 /**
  * This is the base class for field-oriented input streams.  These could be tab-delimited or JSON.

@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.theseed.io;
+package org.theseed.json;
 
 import java.io.IOException;
 import java.util.ArrayList;

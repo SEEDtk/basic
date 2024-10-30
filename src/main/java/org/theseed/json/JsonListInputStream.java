@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.theseed.io;
+package org.theseed.json;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.theseed.io.Attribute;
+import org.theseed.io.FieldInputStream;
 
 /**
  * In this case, the input file is in JSON format.  The format is somewhat restricted.  Each record is a map, and

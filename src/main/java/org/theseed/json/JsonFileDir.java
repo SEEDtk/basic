@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.theseed.io;
+package org.theseed.json;
 
 import java.io.File;
 import java.io.FileFilter;

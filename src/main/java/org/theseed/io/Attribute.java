@@ -27,7 +27,7 @@ public class Attribute {
     /** delimiter for converting lists into single strings */
     public static final String DELIM = "::";
     /** empty string list */
-    protected static final List<String> EMPTY_LIST = Collections.emptyList();
+    public static final List<String> EMPTY_LIST = Collections.emptyList();
 
     /**
      * Construct an attribute from a field in an input record.
