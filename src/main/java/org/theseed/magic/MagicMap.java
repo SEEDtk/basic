@@ -49,8 +49,6 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
             Stream.of("and", "or", "the", "a", "of", "in", "an", "to", "on", "").collect(Collectors.toCollection(HashSet::new));
     /** parentheticals */
     private static final Pattern PARENTHETICAL = Pattern.compile("\\(.*?\\)");
-    /** inside of a parenthetical */
-    private static final Pattern PARENTHESIZED = Pattern.compile("\\((.+)\\)");
     /** things that are not digits and letters */
     private static final String PUNCTUATION = "\\W+";
     /** separate prefix from suffix */
@@ -76,9 +74,9 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
      * @return a shorter representation of the string
      */
     public static String condense(String full) {
-        // Remove outer parentheses, then remove all remaining parentheticals.
-        Matcher m = PARENTHESIZED.matcher(full);
-        String noParens = (m.matches() ? m.group(1) : full);
+        // Remove outer parentheses, if any.
+        String noParens = deparenthesize(full);
+        // Remove remaining parentheticals.
         noParens = RegExUtils.replaceAll(noParens.toLowerCase(),
                 PARENTHETICAL, " ");
         // Separate into words.
@@ -97,6 +95,39 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
             }
         }
        return retVal.toString();
+    }
+
+    /**
+     * Remove the outer parentheses from a string (if any).
+     *
+     * @param full	full string to parse
+     *
+     * @return the original string with outer parentheses removed (if any), or the original string (if not)
+     */
+    public static String deparenthesize(String full) {
+        String noParens = full;
+        if (full.startsWith("(") && full.endsWith(")")) {
+            int level = 1;
+            int i = 1;
+            final int n = full.length() - 1;
+            boolean error = false;
+            while (i < n && ! error) {
+                char c = full.charAt(i);
+                switch (c) {
+                case '(' :
+                    level++;
+                    break;
+                case ')' :
+                    level--;
+                    if (level < 1) error = true;
+                    break;
+                }
+                i++;
+            }
+            if (! error)
+                noParens = full.substring(1, n);
+        }
+        return noParens;
     }
 
     /**

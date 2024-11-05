@@ -54,7 +54,7 @@ public class FidMapper {
     /** count of number of times each genome name was used */
     private CountMap<String> nameCounters;
     /** feature ID parser */
-    private static final Pattern FID_PATTERN = Pattern.compile("fig\\|(\\d+\\.\\d+)\\.(\\w+)\\.(\\d+)");
+    private static final Pattern FID_PATTERN = Pattern.compile("fig\\|(\\d+\\.\\d+)\\.([^.]+)\\.(\\d+)");
 
     /**
      * Create a new, blank FID mapper.
