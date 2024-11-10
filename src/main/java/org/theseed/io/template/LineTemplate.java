@@ -262,6 +262,13 @@ public class LineTemplate {
                             newCommand = new SignWordCommand(this, inStream, m2.group(2));
                             this.addToTop(newCommand);
                             break;
+                        case "ftype" :
+                            // This command outputs a description of a feature type, including
+                            // virus feature types. Grammatically, it will produce a sentence
+                            // predicate.
+                            newCommand = new FeatureTypeCommand(this, inStream, m2.group(2));
+                            this.addToTop(newCommand);
+                            break;
                         default :
                             throw new ParseFailureException("Unknown special command \"" + m2.group(1) + "\".");
                         }
