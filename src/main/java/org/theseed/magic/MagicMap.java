@@ -43,7 +43,6 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     private T searchObj;
     /** list of aliases */
     private List<T> aliases;
-
     /** set of little words */
     private static final HashSet<String> LITTLE_WORDS =
             Stream.of("and", "or", "the", "a", "of", "in", "an", "to", "on", "").collect(Collectors.toCollection(HashSet::new));
@@ -56,6 +55,8 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
 
     /**
      * Create a new, blank magic ID table.
+     *
+     * @param searchObject	a sample, read-only table item used to call item methods
      */
     public MagicMap(T searchObject) {
         this.suffixMapper = new CountMap<String>();
