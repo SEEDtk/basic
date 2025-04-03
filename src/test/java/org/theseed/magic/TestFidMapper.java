@@ -29,11 +29,11 @@ class TestFidMapper {
 
     @Test
     void testFidMapper() throws IOException, ParseFailureException {
-        FidMapper fidMapper = new FidMapper();
+        FidMapper fidMapper = new MagicFidMapper();
         // Set up a genome.
         fidMapper.setup("83332.12", "Mycobacterium tuberculosis H37Rv");
         // Insure we find the genome.
-        String gWords = fidMapper.getGenomeIdWord("83332.12", "Mycobacterium tuberculosis H37Rv");
+        String gWords = fidMapper.getNewGenomeId("83332.12", "Mycobacterium tuberculosis H37Rv");
         assertThat(gWords, equalTo("MycoTubeH37r"));
         // Now try this with all the features.  Our main goal is to insure each feature has a unique ID.
         Set<String> found = new HashSet<String>();
@@ -48,7 +48,7 @@ class TestFidMapper {
                 // Note we have to skip the foreign features.
                 if (! StringUtils.isBlank(fid)) {
                     String product = record.get(prodIdx);
-                    String fidWord = fidMapper.getMagicFid(fid, product);
+                    String fidWord = fidMapper.getNewFid(fid, product);
                     boolean isNew = found.add(fidWord);
                     assertThat(fid + " (" + fidWord + ")", isNew, equalTo(true));
                     if (SPECIAL.contains(fid))
@@ -60,7 +60,7 @@ class TestFidMapper {
         for (var savedEntry : saved.entrySet()) {
             String fid = savedEntry.getKey();
             String expected = savedEntry.getValue();
-            String actual = fidMapper.getMagicFid(fid, "unknown feature");
+            String actual = fidMapper.getNewFid(fid, "unknown feature");
             assertThat(fid, actual, equalTo(expected));
         }
     }
