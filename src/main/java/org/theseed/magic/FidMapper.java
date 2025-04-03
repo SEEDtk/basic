@@ -68,8 +68,10 @@ public abstract class FidMapper {
     }
 
     /**
-	 * @param genomeId
-	 * @param genomeName
+     * Initialize for a new genome.
+     *
+	 * @param genomeId		ID of the genome
+	 * @param genomeName	name of the genome
 	 */
 	protected abstract void setupGenome(String genomeId, String genomeName);
 
@@ -86,6 +88,7 @@ public abstract class FidMapper {
 		if (retVal == null) {
 			// Here we have a new genomeID, so we have to generate.
 			retVal = this.createNewGenomeId(genomeId, genomeName);
+			this.genomeIdMap.put(genomeId, retVal);
 		}
 		return retVal;
 	}

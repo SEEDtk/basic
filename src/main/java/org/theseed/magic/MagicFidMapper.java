@@ -60,6 +60,7 @@ public class MagicFidMapper extends FidMapper {
         String retVal = gNameObject.getId();
         final int count = this.nameCounters.count(retVal);
         retVal = suffixCount(retVal, count);
+        this.genomeNameMap.put(gNameObject);
         return retVal;
 	}
 
