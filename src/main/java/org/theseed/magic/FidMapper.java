@@ -5,6 +5,7 @@ package org.theseed.magic;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -145,7 +146,35 @@ public abstract class FidMapper {
 	 *
      * @throws ParseFailureException
 	 */
-	protected abstract String createNewFeatureId(String fid, String function, String newGenomeId) throws ParseFailureException;
+	protected String createNewFeatureId(String fid, String function, String newGenomeId) throws ParseFailureException {
+		String retVal = null;
+        // Here we have to compute the feature's magic ID.  Parse the ID string.
+        Matcher m = FidMapper.FID_PATTERN.matcher(fid);
+        if (! m.matches())
+            throw new IllegalArgumentException("Invalid feature ID \"" + fid + "\".");
+        else {
+            // Group 1 is the genome ID.  Insure it's the current genome.
+            if (! this.isGenome(m.group(1)))
+                throw new ParseFailureException("Feature \"" + fid + "\" is not from the current genome.");
+            else
+            	retVal = this.computeNewFeatureId(m, function, newGenomeId);
+        }
+        return retVal;
+	}
+
+	/**
+	 * Compute the new feature ID for a feature. This method guarantees that we are in the
+	 * current genome and has already parsed the old feature ID.
+	 *
+	 * @param m				matcher for the old feature ID
+	 * @param function		functional assignment
+	 * @param newGenomeId	new ID of the host genome
+	 *
+	 * @return the new feature's ID
+	 *
+     * @throws ParseFailureException
+	 */
+	protected abstract String computeNewFeatureId(Matcher m, String function, String newGenomeId) throws ParseFailureException;
 
 	/**
      * This retrieves an existing feature identifier given only the old feature ID.  If the

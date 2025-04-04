@@ -65,35 +65,26 @@ public class MagicFidMapper extends FidMapper {
 	}
 
 	@Override
-	protected String createNewFeatureId(String fid, String function, String newGenomeId) throws ParseFailureException {
+	protected String computeNewFeatureId(Matcher m, String function, String newGenomeId) throws ParseFailureException {
 		String retVal = null;
-        // Here we have to compute the feature's magic ID.  Parse the ID string.
-        Matcher m = FidMapper.FID_PATTERN.matcher(fid);
-        if (! m.matches())
-            throw new IllegalArgumentException("Invalid feature ID \"" + fid + "\".");
-        else {
-            // Group 1 is the genome ID.  Insure it's the current genome.
-            if (! this.isGenome(m.group(1)))
-                throw new ParseFailureException("Feature \"" + fid + "\" is not from the current genome.");
-            else if (m.group(2).equals("peg")) {
-                // Insure we have a function.
-                String pegFunction = (StringUtils.isBlank(function) ? "hypothetical protein" : function);
-                // Get the function ID word.
-                Function funObj = this.functionMap.findOrInsert(pegFunction);
-                // Now we need to suffix the function ID word.  If the word ends in a digit, we add
-                // "n" plus the count.  If the word ends in a letter and the count is 1, we don't append.
-                // otherwise we append the count.
-                String funWord = funObj.getId();
-                final int count = this.funCounters.count(funWord);
-                if (funWord.length() < 1)
-                    log.error("Zero-length function word found for function \"{}\" in feature {}.", pegFunction, fid);
-                funWord = suffixCount(funWord, count);
-                // Now build the whole string.
-                retVal = newGenomeId + funWord;
-            } else {
-                // Here we have a not-peg.  We put less work into these.
-                retVal = newGenomeId + StringUtils.capitalize(m.group(2)) + m.group(3);
-            }
+        if (m.group(2).equals("peg")) {
+            // Insure we have a function.
+            String pegFunction = (StringUtils.isBlank(function) ? "hypothetical protein" : function);
+            // Get the function ID word.
+            Function funObj = this.functionMap.findOrInsert(pegFunction);
+            // Now we need to suffix the function ID word.  If the word ends in a digit, we add
+            // "n" plus the count.  If the word ends in a letter and the count is 1, we don't append.
+            // otherwise we append the count.
+            String funWord = funObj.getId();
+            final int count = this.funCounters.count(funWord);
+            if (funWord.length() < 1)
+                log.error("Zero-length function word found for function \"{}\" in feature {}.", pegFunction, m.group());
+            funWord = FidMapper.suffixCount(funWord, count);
+            // Now build the whole string.
+            retVal = newGenomeId + funWord;
+        } else {
+            // Here we have a not-peg.  We put less work into these.
+            retVal = newGenomeId + StringUtils.capitalize(m.group(2)) + m.group(3);
         }
         return retVal;
 	}

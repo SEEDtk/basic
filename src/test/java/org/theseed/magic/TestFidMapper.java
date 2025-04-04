@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.theseed.basic.ParseFailureException;
 import org.theseed.io.FieldInputStream;
+import org.theseed.io.LineReader;
 
 /**
  * @author Bruce Parrello
@@ -28,7 +29,7 @@ class TestFidMapper {
             "fig|83332.12.peg.3669", "fig|83332.12.peg.1941", "fig|83332.12.rna.31");
 
     @Test
-    void testFidMapper() throws IOException, ParseFailureException {
+    void testMagicMapper() throws IOException, ParseFailureException {
         FidMapper fidMapper = new MagicFidMapper();
         // Set up a genome.
         fidMapper.setup("83332.12", "Mycobacterium tuberculosis H37Rv");
@@ -64,5 +65,66 @@ class TestFidMapper {
             assertThat(fid, actual, equalTo(expected));
         }
     }
+
+	// In our test genome mapping, we have three genomes mapping to 1.1 and two to 2.1. Genomes that
+	// map to themselves do not have to be included.
+	private static final Map<String, String> GMAP = Map.of("1.2", "1.1", "1.3", "1.1", "2.2", "2.1");
+
+	@Test
+	void testComboMapper() throws IOException, ParseFailureException {
+		FidMapper fidMapper = new CombinationFidMapper(GMAP);
+		try (LineReader inStream = new LineReader(new File("data", "comboMapper.txt"))) {
+			String currGenomeId = null;
+			Map<String, String> checkMap = new HashMap<String, String>(50);
+			for (var line : inStream) {
+				// Each record is three columns. If the first column has a genome ID, it's a new
+				// genome. Otherwise it's a feature mapping.
+				String[] cols = StringUtils.split(line, '\t');
+				if (! StringUtils.isBlank(cols[0])) {
+					// Here we have a new genome. Second column is the genome name.
+					String genomeId = cols[0];
+					String genomeName = cols[1];
+					// If we have a previous genome, check its mappings.
+					this.checkGenomeFids(fidMapper, currGenomeId, checkMap);
+					checkMap.clear();
+					// Now set up the new genome.
+					currGenomeId = GMAP.getOrDefault(genomeId, genomeId);
+					fidMapper.setup(genomeId, genomeName);
+					assertThat(genomeId, fidMapper.getNewGenomeId(genomeId), equalTo(currGenomeId));
+				} else {
+					// Here we have a feature. Second column is the expected feature ID. Third is the role.
+					String fid = cols[1];
+					String newFid = cols[2];
+					String role = cols[3];
+					String computed = fidMapper.getNewFid(fid, role);
+					assertThat(fid, computed, equalTo(newFid));
+					checkMap.put(fid, computed);
+				}
+			}
+			// Check the feature map for the last genome.
+			this.checkGenomeFids(fidMapper, currGenomeId, checkMap);
+			// Verify the genome mappings.
+			for (var gEntry : GMAP.entrySet()) {
+				String gId = gEntry.getKey();
+				assertThat(gId, fidMapper.getNewGenomeId(gId), equalTo(gEntry.getValue()));
+			}
+		}
+	}
+
+	/**
+	 * Verify that the feature mappings have been saved correctly.
+	 *
+	 * @param fidMapper		feature-mapper being tested
+	 * @param currGenomeId	ID of the mapped genome (if NULL, the feature-mapper is empty)
+	 * @param checkMap		saved feature mappings for verification
+	 */
+	protected void checkGenomeFids(FidMapper fidMapper, String currGenomeId, Map<String, String> checkMap) {
+		if (currGenomeId != null) {
+			for (var checkEntry : checkMap.entrySet()) {
+				String fid = checkEntry.getKey();
+				assertThat(fid, fidMapper.getNewFid(fid), equalTo(checkEntry.getValue()));
+			}
+		}
+	}
 
 }

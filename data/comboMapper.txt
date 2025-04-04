@@ -1,0 +1,21 @@
+1.1	test 1
+	fig|1.1.peg.1	fig|1.1.peg.1	role 1
+	fig|1.1.rna.1	fig|1.1.rna.1	role 2
+	fig|1.1.rna.2	fig|1.1.rna.2	role 3
+	fig|1.1.peg.2	fig|1.1.peg.2	role 4
+	fig|1.1.peg.3	fig|1.1.peg.3	role 5
+	fig|1.1.peg.4	fig|1.1.peg.4	role 6
+1.2	test 1
+	fig|1.2.peg.1	fig|1.1.peg.5	role 7
+	fig|1.2.rna.1	fig|1.1.rna.3	role 8
+	fig|1.2.peg.2	fig|1.1.peg.6	role 9
+	fig|1.2.rbs.1	fig|1.1.rbs.1	role A
+1.3	test 1
+	fig|1.3.rbs.1	fig|1.1.rbs.2	role B
+	fig|1.3.peg.1	fig|1.1.peg.7	role C
+2.1	test 2
+	fig|2.1.peg.10	fig|2.1.peg.1	role D
+	fig|2.1.peg.20	fig|2.1.peg.2	role E
+2.2	test 2
+	fig|2.2.peg.1	fig|2.1.peg.3	role F
+	fig|2.2.rna.1	fig|2.1.rna.1	role G
