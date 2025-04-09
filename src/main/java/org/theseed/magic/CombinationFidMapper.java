@@ -3,10 +3,9 @@
  */
 package org.theseed.magic;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
 import org.theseed.basic.ParseFailureException;
 import org.theseed.counters.CountMap;
 
@@ -79,10 +78,16 @@ public class CombinationFidMapper extends FidMapper {
 	 * @param gMap	map from old genome IDs to new genome IDs
 	 */
 	public CombinationFidMapper(Map<String, String> gMap) {
-		// First we build the tracker map from the genome map. The source genome ID remains the key,
-		// and the target genome ID is used to build the tracker.
-		this.trackerMap = gMap.entrySet().stream().collect(Collectors.toMap(x -> x.getKey(),
-				x -> new GenomeTracker(x.getValue())));
+		// First we build the tracker map from the genome map. The same tracker is associated with the
+		// target genome ID and the source genome ID. This is important, because we want all sources with
+		// the same target to point to the same tracker.
+		this.trackerMap = new HashMap<String, GenomeTracker>(gMap.size() * 2);
+		for (var gEntry : gMap.entrySet()) {
+			String sourceId = gEntry.getKey();
+			String targetId = gEntry.getValue();
+			GenomeTracker targetTracker = this.trackerMap.computeIfAbsent(targetId, x -> new GenomeTracker(x));
+			this.trackerMap.put(sourceId, targetTracker);
+		}
 		// Clear the current-tracker cache.
 		this.currTracker = null;
 	}
@@ -91,7 +96,8 @@ public class CombinationFidMapper extends FidMapper {
 	protected void setupGenome(String genomeId, String genomeName) {
 		// Here we are starting a new genome. We retrieve the new genome's tracker.
 		// Note that if the genome ID is not found, we map it to itself.
-		this.currTracker = this.trackerMap.computeIfAbsent(genomeId, x -> new GenomeTracker(genomeId));
+		this.currTracker = this.trackerMap.computeIfAbsent(genomeId, x -> new GenomeTracker(x));
+		log.info("Mapping genome {} into {}.", genomeId, this.currTracker.targetGenomeId);
 	}
 
 	@Override
@@ -107,7 +113,9 @@ public class CombinationFidMapper extends FidMapper {
 		// Get the match group for the feature type.
 		String fType = m.group(2);
 		// Compute the new feature ID using the genome tracker.
-		return this.currTracker.computeNewFid(fType);
+		String retVal = this.currTracker.computeNewFid(fType);
+		log.debug("Feature mapping of {} to {}.", m.group(), retVal);
+		return retVal;
 	}
 
 }
