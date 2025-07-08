@@ -4,7 +4,6 @@
 package org.theseed.io;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Bruce Parrello
  *
  */
-public class LineReader implements Iterable<String>, Iterator<String>, Closeable, AutoCloseable {
+public class LineReader implements Iterable<String>, Iterator<String>, AutoCloseable {
 
     /** underlying buffered reader */
     private BufferedReader reader;
