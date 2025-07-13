@@ -22,15 +22,77 @@ public class JsonTokenizer implements Iterable<String> {
     /** list of tokens to pass back to caller */
     private List<String> tokens;
     /** string being tokenized */
-    private String line;
+    protected String line;
     /** next character to process in string */
-    private int pos;
+    protected int pos;
     /** string buffer for building tokens */
-    private StringBuilder buffer;
+    protected StringBuilder buffer;
     /** current line number */
-    private int lineNumber;
+    protected int lineNumber;
     /** string of JSON delimiters */
     private static final String DELIMS = ",}]:";
+
+    /**
+     * This is a version of the tokenizer that returns the strings with the quotes in place.
+     * Thus, the only change is how we parse a quoted string.
+     */
+    public static class Raw extends JsonTokenizer {
+
+        /**
+         * Parse a string into raw JSON tokens. Unlike the base class, this does not strip quotes
+         * or unescape strings.
+         * 
+         * @param line      input line to tokenize
+         * @param lineNum   line number for error messages
+         * 
+         * @throws IOException
+         */
+        public Raw(String line, int lineNum) throws IOException {
+            super(line, lineNum);
+        }
+
+        /**
+         * This method parses a quoted string.  It is presumed the current position is on the
+         * open quote.  It will be moved past the close quote.
+         *
+         * @return the string extracted from the line
+         *
+         * @throws IOException
+         */
+        @Override
+        protected String parseString() throws IOException {
+            final int n = this.line.length();
+            // Push past the open quote.
+            this.buffer.append('"');
+            this.pos++;
+            // Loop ahead, looking for the close quote.
+            boolean closed = false;
+            while (this.pos < n && ! closed) {
+                char c = line.charAt(this.pos);
+                switch (c) {
+                case '\\' :
+                    // Here we have a backslash, so we need to push the next character regardless of what it is.
+                    this.buffer.append(c);
+                    this.pos++;
+                    if (this.pos >= n)
+                        throw new IOException("Invalid escape sequence at end of string in line " + this.lineNumber + ".");
+                    c = line.charAt(this.pos);
+                    break;
+                case '"' :
+                    // Here we have the close quote.
+                    closed = true;
+                    break;
+                }
+                this.buffer.append(c);
+                this.pos++;
+            }
+            // Return the token and empty the buffer.
+            String retVal = this.buffer.toString();
+            this.buffer.setLength(0);
+            return retVal;
+        }
+
+    }
 
     /**
      * Parse a string into JSON tokens.
@@ -61,7 +123,8 @@ public class JsonTokenizer implements Iterable<String> {
             } else switch (c) {
             case '"' :
                 // Here we have a string.
-                this.tokens.add(this.parseString());
+                String tokenString = this.parseString();
+                this.tokens.add(tokenString);
                 break;
             case '[' :
             case ']' :
@@ -80,7 +143,7 @@ public class JsonTokenizer implements Iterable<String> {
         }
     }
 
-    /**
+     /**
      * This method parses a quoted string.  It is presumed the current position is on the
      * open quote.  It will be moved past the close quote.
      *
@@ -88,7 +151,7 @@ public class JsonTokenizer implements Iterable<String> {
      *
      * @throws IOException
      */
-    private String parseString() throws IOException {
+    protected String parseString() throws IOException {
         final int n = this.line.length();
         // Push past the open quote.
         this.pos++;
@@ -122,7 +185,7 @@ public class JsonTokenizer implements Iterable<String> {
      *
      * @throws IOException
      */
-    private void parseEscape() throws IOException {
+    protected void parseEscape() throws IOException {
         final int n = this.line.length();
         this.pos++;
         if (this.pos >= n)

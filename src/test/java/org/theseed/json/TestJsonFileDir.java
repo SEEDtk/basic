@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -115,5 +116,35 @@ class TestJsonFileDir {
             }
         }
 
+    }
+
+    @Test
+    public void testJsonListIterator() throws IOException {
+        File mainJson = new File("data", "genome_feature.json");
+        try (JsonListIterator iter = new JsonListIterator(mainJson)) {
+            assertThat(iter.hasNext(), equalTo(true));
+            JsonObject record = iter.next();
+            assertThat(record.size(), equalTo(22));
+            assertThat((BigDecimal) record.get("_version_"), comparesEqualTo(BigDecimal.valueOf(1695269065998729220L)));
+            assertThat(record.get("genome_name"), equalTo("Mycobacterium tuberculosis H37Rv"));
+            assertThat(record.get("feature_id"), equalTo("RefSeq.83332.12.NC_000962.repeat_region.1612600.1612620.rev"));
+            assertThat(record.get("annotation"), equalTo("RefSeq"));
+            assertThat(record.get("public"), equalTo(true));
+            assertThat(iter.hasNext(), equalTo(true));
+            record = iter.next();
+            assertThat(record.size(), equalTo(29));
+            JsonArray propertyList = (JsonArray) record.get("property");
+            assertThat(propertyList, containsInAnyOrder("EC number", "Pathway"));
+            assertThat(record.get("location"), equalTo("complement(4138202..4139755)"));
+            assertThat((BigDecimal) record.get("aa_length"), comparesEqualTo(BigDecimal.valueOf(517)));
+            assertThat(record.get("strand"), equalTo("-"));
+            assertThat(iter.hasNext(), equalTo(true));
+            record = iter.next();
+            assertThat(record.size(), comparesEqualTo(24));
+            assertThat(record.get("accession"), equalTo("NC_000962"));
+            assertThat(record.get("feature_id"), equalTo("RefSeq.83332.12.NC_000962.misc_feature.3879306.3879329.rev"));
+            assertThat((BigDecimal) record.get("taxon_id"), comparesEqualTo(BigDecimal.valueOf(83332)));
+            assertThat(iter.hasNext(), equalTo(false));
+        }
     }
 }
