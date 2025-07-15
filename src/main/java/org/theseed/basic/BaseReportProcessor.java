@@ -46,7 +46,7 @@ public abstract class BaseReportProcessor extends BaseProcessor {
     protected abstract void setReporterDefaults();
 
     @Override
-    protected final boolean validateParms() throws IOException, ParseFailureException {
+    protected final void validateParms() throws IOException, ParseFailureException {
         this.validateReporterParms();
         if (this.outFile == null) {
             log.info("Output will be to the standard output.");
@@ -55,7 +55,6 @@ public abstract class BaseReportProcessor extends BaseProcessor {
             log.info("Output will be to {}.", this.outFile);
             this.outStream = new FileOutputStream(this.outFile);
         }
-        return true;
     }
 
     /**

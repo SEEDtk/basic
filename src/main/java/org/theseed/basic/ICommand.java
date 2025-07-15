@@ -18,7 +18,7 @@ public interface ICommand {
      *
      * @return	TRUE if the options were correct, else FALSE
      */
-    public boolean parseCommand(String[] args);
+    public void parseCommand(String[] args);
 
     /**
      * Run the command.

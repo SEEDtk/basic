@@ -60,8 +60,7 @@ public abstract class BaseProcessor implements ICommand {
     }
 
     @Override
-    public final boolean parseCommand(String[] args) {
-        boolean retVal = false;
+    public final void parseCommand(String[] args) {
         this.help = false;
         this.debug = false;
         this.setDefaults();
@@ -76,8 +75,7 @@ public abstract class BaseProcessor implements ICommand {
             if (this.help) {
                 parser.printUsage(System.err);
             } else {
-                retVal = this.validateParms();
-                if (retVal && this.debug) {
+                if (this.debug) {
                     // To get more progress messages, we set the log level in logback.
                     ch.qos.logback.classic.Logger logger = this.loggerContext.getLogger("org.theseed");
                     logger.setLevel(Level.toLevel("TRACE"));
@@ -86,6 +84,7 @@ public abstract class BaseProcessor implements ICommand {
                     URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(this.loggerContext);
                     log.info("Normal logging selected using configuration at {}.", mainURL);
                 }
+                this.validateParms();
             }
         } catch (CmdLineException | ParseFailureException e) {
             System.err.println(e.toString());
@@ -95,7 +94,6 @@ public abstract class BaseProcessor implements ICommand {
             log.error("PARAMETER ERROR.", e);
             System.exit(99);
         }
-        return retVal;
     }
 
     /**
@@ -120,7 +118,7 @@ public abstract class BaseProcessor implements ICommand {
     /**
      * Validate the parameters after parsing.
      */
-    protected abstract boolean validateParms() throws IOException, ParseFailureException;
+    protected abstract void validateParms() throws IOException, ParseFailureException;
 
     /**
      * Run the command process.
