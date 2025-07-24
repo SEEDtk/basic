@@ -74,6 +74,7 @@ public abstract class BaseProcessor implements ICommand {
             parser.parseArgument(args);
             if (this.help) {
                 parser.printUsage(System.err);
+                System.exit(0);
             } else {
                 if (this.debug) {
                     // To get more progress messages, we set the log level in logback.
