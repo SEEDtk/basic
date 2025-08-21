@@ -82,7 +82,7 @@ public class LineTemplate {
 
     // FIELDS
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(LineTemplate.class);
+    private static final Logger log = LoggerFactory.getLogger(LineTemplate.class);
     /** compiled template */
     private TemplateCommand compiledTemplate;
     /** compile stack */

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.theseed.basic.ParseFailureException;
 
 /**
@@ -27,12 +25,10 @@ import org.theseed.basic.ParseFailureException;
 public abstract class FidMapper {
 
     // FIELDS
-    /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(FidMapper.class);
     /** genome ID map */
-    private Map<String, String> genomeIdMap;
+    private final Map<String, String> genomeIdMap;
     /** feature ID map */
-    private Map<String, String> featureIdMap;
+    private final Map<String, String> featureIdMap;
     /** current genome old ID */
     private String currGenomeId;
     /** current genome new ID */
@@ -44,8 +40,8 @@ public abstract class FidMapper {
      * Create a new, blank FID mapper.
      */
     public FidMapper() {
-        this.genomeIdMap = new HashMap<String, String>();
-        this.featureIdMap = new HashMap<String, String>();
+        this.genomeIdMap = new HashMap<>();
+        this.featureIdMap = new HashMap<>();
         this.currGenomeId = "";
         this.currGenomeNewId = null;
     }
@@ -62,10 +58,9 @@ public abstract class FidMapper {
         // Erase the old features.
         this.featureIdMap.clear();
         // Get a new ID for the genome.
-        String currGenomeNewId = this.getNewGenomeId(genomeId, genomeName);
+        this.currGenomeNewId = this.getNewGenomeId(genomeId, genomeName);
         // Save the magic word ID.
         this.currGenomeId = genomeId;
-        this.currGenomeNewId = currGenomeNewId;
     }
 
     /**

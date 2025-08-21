@@ -24,7 +24,7 @@ public abstract class BaseReportProcessor extends BaseProcessor {
 
     // FIELDS
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(BaseReportProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseReportProcessor.class);
     /** output stream */
     private OutputStream outStream;
 

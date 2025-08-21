@@ -26,7 +26,7 @@ public class JsonFileDir implements Iterable<File> {
 
     // FIELDS
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(JsonFileDir.class);
+    private static final Logger log = LoggerFactory.getLogger(JsonFileDir.class);
     /** array of JSON files in this directory */
     private File[] jsonFiles;
     /** JSON file filter */

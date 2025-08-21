@@ -30,7 +30,7 @@ public class TemplateHashWriter implements ITemplateWriter {
 
     // FIELDS
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(TemplateHashWriter.class);
+    private static final Logger log = LoggerFactory.getLogger(TemplateHashWriter.class);
     /** master hash -- fileName -> key -> string */
     private Map<String, Map<String, List<String>>> masterHash;
     /** choice lists -- type -> choice set */

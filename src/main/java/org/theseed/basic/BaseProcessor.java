@@ -31,9 +31,9 @@ public abstract class BaseProcessor implements ICommand {
 
     // FIELDS
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(BaseProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseProcessor.class);
     /** start time of processor */
-    private long startTime;
+    private final long startTime;
     /** saved incoming parameters */
     private String[] options;
     /** logging context */
