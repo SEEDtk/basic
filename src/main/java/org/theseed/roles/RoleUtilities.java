@@ -20,6 +20,8 @@ public class RoleUtilities {
     public static final Pattern SSU_R_RNA = Pattern.compile("SSU\\s+rRNA|Small\\s+Subunit\\s+(?:Ribosomal\\s+)?r?RNA|ssuRNA|16S\\s+(?:r(?:ibosomal\\s+)?)?RNA", Pattern.CASE_INSENSITIVE);
     /** parsing pattern for removing function comments */
     public static final Pattern COMMENT_PATTERN = Pattern.compile("\\s*[#!].+");
+    /** seed protein function */
+    public static final String SEED_FUNCTION = "Phenylalanyl-tRNA synthetase alpha chain (EC 6.1.1.20)";
 
     /**
      * @return a function with the comment removed
