@@ -40,6 +40,8 @@ public abstract class BaseProcessor implements ICommand {
     private LoggerContext loggerContext;
     /** invocation command (set by subclass at its discretion) */
     private String commandString;
+    /** parser for command-line options */
+    private CmdLineParser parser;
 
     // COMMAND-LINE OPTIONS
 
@@ -57,10 +59,34 @@ public abstract class BaseProcessor implements ICommand {
     public BaseProcessor() {
         this.startTime = System.currentTimeMillis();
         this.commandString = "(unknown)";
+        this.parser = null;
     }
 
     @Override
     public final void parseCommand(String[] args) {
+        try {
+            this.parseCommandLine(args);
+        } catch (CmdLineException | ParseFailureException e) {
+            System.err.println(e.toString());
+            this.printUsage();
+            System.exit(99);
+        } catch (IOException e) {
+            log.error("PARAMETER ERROR.", e);
+            System.exit(99);
+        }
+    }
+
+    /**
+     * Parse the command-line arguments. This method allows exceptions to pass to the caller, allowing
+     * for more flexible error handling. Note that it also calls the validation method.
+     * 
+     * @param args      array of command-line parameters to process
+     * 
+     * @throws CmdLineException
+     * @throws IOException
+     * @throws ParseFailureException
+     */
+    public final void parseCommandLine(String[] args) throws CmdLineException, IOException, ParseFailureException {
         this.help = false;
         this.debug = false;
         this.setDefaults();
@@ -69,32 +95,23 @@ public abstract class BaseProcessor implements ICommand {
         // Save the incoming parameters.
         this.options = args;
         // Parse them.
-        CmdLineParser parser = new CmdLineParser(this);
-        try {
-            parser.parseArgument(args);
-            if (this.help) {
-                parser.printUsage(System.err);
-                System.exit(0);
-            } else {
-                if (this.debug) {
-                    // To get more progress messages, we set the log level in logback.
-                    ch.qos.logback.classic.Logger logger = this.loggerContext.getLogger("org.theseed");
-                    logger.setLevel(Level.toLevel("TRACE"));
-                    log.info("Debug logging ON.");
-                } else {
-                    URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(this.loggerContext);
-                    log.info("Normal logging selected using configuration at {}.", mainURL);
-                }
-                this.validateParms();
-            }
-        } catch (CmdLineException | ParseFailureException e) {
-            System.err.println(e.toString());
-            parser.printUsage(System.err);
-            System.exit(99);
-        } catch (IOException e) {
-            log.error("PARAMETER ERROR.", e);
-            System.exit(99);
+        this.parser = new CmdLineParser(this);
+        this.parser.parseArgument(args);
+        if (this.help) {
+            this.printUsage();
+            System.exit(0);
         }
+        if (this.debug) {
+            // To get more progress messages, we set the log level in logback.
+            ch.qos.logback.classic.Logger logger = this.loggerContext.getLogger("org.theseed");
+            logger.setLevel(Level.toLevel("TRACE"));
+            log.info("Debug logging ON.");
+        } else {
+            URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(this.loggerContext);
+            log.info("Normal logging selected using configuration at {}.", mainURL);
+        }
+        if (! this.help)
+            this.validateParms();
     }
 
     /**
@@ -206,6 +223,17 @@ public abstract class BaseProcessor implements ICommand {
         final int tabSize = maxLen + 2;
         for (var mapEntry : commandMap.entrySet())
             System.err.println(StringUtils.rightPad(mapEntry.getKey(), tabSize) + mapEntry.getValue());
+    }
+
+    /**
+     * Print the command-line usage information on the error output stream.
+     */
+    public final void printUsage() {
+        // Insure we have a command-line parser.
+        if (this.parser == null)
+            this.parser = new CmdLineParser(this);
+        // Print the usage display on the error output.
+        this.parser.printUsage(System.err);
     }
 
 }

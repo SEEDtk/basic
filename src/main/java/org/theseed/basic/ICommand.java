@@ -9,7 +9,7 @@ package org.theseed.basic;
  * @author Bruce Parrello
  *
  */
-public interface ICommand {
+public interface ICommand extends Runnable {
 
     /**
      * Parse the command-line arguments.
@@ -23,6 +23,7 @@ public interface ICommand {
     /**
      * Run the command.
      */
+    @Override
     public void run();
 
 }
