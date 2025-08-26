@@ -3,14 +3,13 @@
  */
 package org.theseed.io.template;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ import org.theseed.io.template.output.TemplateHashWriter;
 class TestLineTemplate {
 
     /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(TestLineTemplate.class);
+    private static final Logger log = LoggerFactory.getLogger(TestLineTemplate.class);
 
 
     @Test

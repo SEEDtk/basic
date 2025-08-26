@@ -16,8 +16,6 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.theseed.json.JsonListInputStream;
 
 /**
@@ -35,8 +33,6 @@ import org.theseed.json.JsonListInputStream;
 public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldInputStream.Record>, Iterator<FieldInputStream.Record> {
 
     // FIELDS
-    /** logging facility */
-    protected static Logger log = LoggerFactory.getLogger(FieldInputStream.class);
     /** list of field names found in each record, in order */
     private List<String> fieldNames;
     /** active line reader */
@@ -103,7 +99,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
     public class Record {
 
         /** list of fields */
-        private List<List<String>> fields;
+        private final List<List<String>> fields;
 
         /**
          * Construct a record from an array of strings.
@@ -111,9 +107,8 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
          * @param fieldString	array of strings to put in the fields
          */
         public Record(String[] fieldStrings) {
-            this.fields = new ArrayList<List<String>>(fieldStrings.length);
-            for (int i = 0; i < fieldStrings.length; i++) {
-                String field = fieldStrings[i];
+            this.fields = new ArrayList<>(fieldStrings.length);
+            for (String field : fieldStrings) {
                 if (StringUtils.isBlank(field))
                     this.fields.add(Attribute.EMPTY_LIST);
                 else {
@@ -129,7 +124,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
          * @param n		number of fields to expect
          */
         public Record(int n) {
-            this.fields = new ArrayList<List<String>>(n);
+            this.fields = new ArrayList<>(n);
             for (int i = 0; i < n; i++)
                 this.fields.add(Attribute.EMPTY_LIST);
         }
@@ -303,7 +298,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
     private void setup() {
         this.lineIter = this.reader.iterator();
         // Initialize the field-name list.
-        this.fieldNames = new ArrayList<String>();
+        this.fieldNames = new ArrayList<>();
         // Denote that field names are unlocked.
         this.fieldsLocked = false;
         // Denote that we have not read any lines.

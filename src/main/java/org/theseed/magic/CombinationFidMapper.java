@@ -6,6 +6,9 @@ package org.theseed.magic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.theseed.basic.ParseFailureException;
 import org.theseed.counters.CountMap;
 
@@ -26,8 +29,10 @@ import org.theseed.counters.CountMap;
 public class CombinationFidMapper extends FidMapper {
 
 	// FIELDS
+	/** logging facility */
+	private static final Logger log = LoggerFactory.getLogger(CombinationFidMapper.class);
 	/** genome ID to tracker map */
-	private Map<String, GenomeTracker> trackerMap;
+	private final Map<String, GenomeTracker> trackerMap;
 	/** genome tracker for the current genome */
 	private GenomeTracker currTracker;
 
@@ -38,9 +43,9 @@ public class CombinationFidMapper extends FidMapper {
 	protected static class GenomeTracker {
 
 		/** target genome ID */
-		private String targetGenomeId;
+		private final String targetGenomeId;
 		/** map of feature types to counts */
-		private CountMap<String> typeCounts;
+		private final CountMap<String> typeCounts;
 
 		/**
 		 * Create a genome tracker for a genome.
@@ -49,7 +54,7 @@ public class CombinationFidMapper extends FidMapper {
 		 */
 		protected GenomeTracker(String newId) {
 			this.targetGenomeId = newId;
-			this.typeCounts = new CountMap<String>();
+			this.typeCounts = new CountMap<>();
 		}
 
 		/**
@@ -81,7 +86,7 @@ public class CombinationFidMapper extends FidMapper {
 		// First we build the tracker map from the genome map. The same tracker is associated with the
 		// target genome ID and the source genome ID. This is important, because we want all sources with
 		// the same target to point to the same tracker.
-		this.trackerMap = new HashMap<String, GenomeTracker>(gMap.size() * 2);
+		this.trackerMap = new HashMap<>(gMap.size() * 2);
 		for (var gEntry : gMap.entrySet()) {
 			String sourceId = gEntry.getKey();
 			String targetId = gEntry.getValue();

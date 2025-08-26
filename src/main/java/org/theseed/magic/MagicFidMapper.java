@@ -12,6 +12,8 @@ import org.theseed.genome.GenomeName;
 import org.theseed.genome.GenomeNameMap;
 import org.theseed.proteins.Function;
 import org.theseed.proteins.FunctionMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a feature-mapper that stores magic IDs. Magic genome IDs are unique to each individual
@@ -24,14 +26,16 @@ import org.theseed.proteins.FunctionMap;
 public class MagicFidMapper extends FidMapper {
 
 	// FIELDS
+    /** logging facility */
+    private static final Logger log = LoggerFactory.getLogger(MagicFidMapper.class);
     /** functional assignment name map */
-    private FunctionMap functionMap;
+    private final FunctionMap functionMap;
     /** count of number of times each function word was used */
-    private CountMap<String> funCounters;
+    private final CountMap<String> funCounters;
     /** count of number of times each genome name was used */
-    private CountMap<String> nameCounters;
+    private final CountMap<String> nameCounters;
     /** genome name map */
-    private GenomeNameMap genomeNameMap;
+    private final GenomeNameMap genomeNameMap;
 
 	/**
 	 * Construct a magic-word feature mapper.
@@ -42,8 +46,8 @@ public class MagicFidMapper extends FidMapper {
 		// Set up the magic-word map for genomes.
         this.genomeNameMap = new GenomeNameMap();
         // Clear the suffix counters.
-		this.funCounters = new CountMap<String>();
-		this.nameCounters = new CountMap<String>();
+		this.funCounters = new CountMap<>();
+		this.nameCounters = new CountMap<>();
 	}
 
 	@Override
@@ -66,7 +70,7 @@ public class MagicFidMapper extends FidMapper {
 
 	@Override
 	protected String computeNewFeatureId(Matcher m, String function, String newGenomeId) throws ParseFailureException {
-		String retVal = null;
+		String retVal;
         if (m.group(2).equals("peg")) {
             // Insure we have a function.
             String pegFunction = (StringUtils.isBlank(function) ? "hypothetical protein" : function);
