@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonException;
 import com.github.cliftonlabs.json_simple.Jsoner;
@@ -28,18 +29,15 @@ public class JsonFileDir implements Iterable<File> {
     /** logging facility */
     private static final Logger log = LoggerFactory.getLogger(JsonFileDir.class);
     /** array of JSON files in this directory */
-    private File[] jsonFiles;
+    private final File[] jsonFiles;
     /** JSON file filter */
-    private FileFilter JSON_FILE_FILTER = new FileFilter() {
-        @Override
-        public boolean accept(File pathname) {
-            boolean retVal = pathname.isFile();
-            if (retVal) {
-                String fileName = pathname.getName();
-                retVal = fileName.endsWith(".json");
-            }
-            return retVal;
+    private final FileFilter JSON_FILE_FILTER = (File pathname) -> {
+        boolean retVal = pathname.isFile();
+        if (retVal) {
+            String fileName = pathname.getName();
+            retVal = fileName.endsWith(".json");
         }
+        return retVal;
     };
 
     /**
