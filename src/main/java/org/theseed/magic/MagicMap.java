@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.theseed.counters.CountMap;
+
 import murmur3.MurmurHash3.LongPair;
 
 /**
@@ -34,15 +35,15 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
 
     // FIELDS
     /** map from prefixes to the next usable suffix number */
-    private CountMap<String> suffixMapper;
+    private final CountMap<String> suffixMapper;
     /** map from ids to objects */
-    private Map<String, T> idMapper;
+    private final Map<String, T> idMapper;
     /** map from checksums to objects */
-    private Map<LongPair, T> checkMapper;
+    private final Map<LongPair, T> checkMapper;
     /** dummy object for lookups (this object CANNOT be modified; we just use it to call methods) */
-    private T searchObj;
+    private final T searchObj;
     /** list of aliases */
-    private List<T> aliases;
+    private final List<T> aliases;
     /** set of little words */
     private static final HashSet<String> LITTLE_WORDS =
             Stream.of("and", "or", "the", "a", "of", "in", "an", "to", "on", "").collect(Collectors.toCollection(HashSet::new));
@@ -59,11 +60,11 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
      * @param searchObject	a sample, read-only table item used to call item methods
      */
     public MagicMap(T searchObject) {
-        this.suffixMapper = new CountMap<String>();
-        this.idMapper = new HashMap<String, T>();
-        this.checkMapper = new HashMap<LongPair, T>();
+        this.suffixMapper = new CountMap<>();
+        this.idMapper = new HashMap<>();
+        this.checkMapper = new HashMap<>();
         this.searchObj = searchObject;
-        this.aliases = new ArrayList<T>();
+        this.aliases = new ArrayList<>();
     }
 
     /**
@@ -78,7 +79,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
         // Remove outer parentheses, if any.
         String noParens = deparenthesize(full);
         // Remove remaining parentheticals.
-        noParens = RegExUtils.replaceAll(noParens.toLowerCase(),
+        noParens = RegExUtils.replaceAll((CharSequence) noParens.toLowerCase(),
                 PARENTHETICAL, " ");
         // Separate into words.
         String[] words = noParens.split(PUNCTUATION);
@@ -115,13 +116,11 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
             while (i < n && ! error) {
                 char c = full.charAt(i);
                 switch (c) {
-                case '(' :
-                    level++;
-                    break;
-                case ')' :
+                case '(' -> level++;
+                case ')' -> {
                     level--;
                     if (level < 1) error = true;
-                    break;
+                    }
                 }
                 i++;
             }
@@ -161,7 +160,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
                     prefix = id;
                     suffixString = "";
                 }
-                int suffix = (suffixString.isEmpty() ? 0 : Integer.valueOf(suffixString));
+                int suffix = (suffixString.isEmpty() ? 0 : Integer.parseInt(suffixString));
                 // Insure this suffix is not reused.
                 CountMap<String>.Count suffixCounter = this.suffixMapper.findCounter(prefix);
                 if (suffixCounter == null)
@@ -189,6 +188,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     /**
      * @return TRUE if this map has nothing in it
      */
+    @Override
     public boolean isEmpty() {
         return this.idMapper.isEmpty();
     }
@@ -313,6 +313,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     /**
      * Erase everything in this mapping.  This will cause IDs to be reused.
      */
+    @Override
     public void clear() {
         this.suffixMapper.clear();
         this.idMapper.clear();
@@ -321,6 +322,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     /**
      * @return a list of role IDs
      */
+    @Override
     public Set<String> keySet() {
         return this.idMapper.keySet();
     }
@@ -329,7 +331,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
      * @return all the objects in this map
      */
     public Collection<T> objectValues() {
-        ArrayList<T> retVal = new ArrayList<T>(this.fullSize());
+        ArrayList<T> retVal = new ArrayList<>(this.fullSize());
         retVal.addAll(this.idMapper.values());
         retVal.addAll(this.aliases);
         return retVal;
@@ -362,8 +364,8 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     @Override
     public boolean containsValue(Object value) {
         boolean retVal = false;
-        if (value instanceof String) {
-            retVal = (this.getByName((String) value) != null);
+        if (value instanceof String string) {
+            retVal = (this.getByName(string) != null);
         }
         return retVal;
     }
@@ -385,13 +387,13 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
     @Override
     public String remove(Object key) {
         String retVal = null;
-        if (key instanceof String) {
-            T target = this.getItem((String) key);
+        if (key instanceof String string) {
+            T target = this.getItem(string);
             if (target != null) {
                 this.idMapper.remove(key);
                 this.checkMapper.remove(target.getChecksum());
                 for (T alias : this.aliases) {
-                    if (alias.getId().contentEquals(((String) key)))
+                    if (alias.getId().contentEquals(string))
                         this.aliases.remove(alias);
                 }
                 retVal = target.getName();
@@ -431,7 +433,7 @@ public class MagicMap<T extends MagicObject> implements Map<String, String>, Ite
      */
     public List<T> getAllById(String key) {
         // Create an empty return list.
-        List<T> retVal = new ArrayList<T>(5);
+        List<T> retVal = new ArrayList<>(5);
         // Get the primary.
         T obj = this.getItem(key);
         if (obj != null) {

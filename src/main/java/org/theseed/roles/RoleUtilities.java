@@ -29,7 +29,7 @@ public class RoleUtilities {
      * @param function	function to check for comments
      */
     public static String commentFree(String function) {
-        return RegExUtils.removeFirst(function, COMMENT_PATTERN);
+        return RegExUtils.removeFirst((CharSequence) function, COMMENT_PATTERN);
     }
 
 }

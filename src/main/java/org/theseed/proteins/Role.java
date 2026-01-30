@@ -46,6 +46,7 @@ public class Role extends MagicObject implements Comparable<Role> {
     public Role() { }
 
     /** Compute the normalized version of the role description. */
+    @Override
     protected String normalize() {
         String retVal = this.getName();
         retVal = this.normalize(retVal);
@@ -82,7 +83,7 @@ public class Role extends MagicObject implements Comparable<Role> {
             }
         }
         // Now remove the extra spaces and punctuation.
-        roleDesc = RegExUtils.replaceAll(roleDesc, EXTRA_SPACES, " ");
+        roleDesc = RegExUtils.replaceAll((CharSequence) roleDesc, EXTRA_SPACES, " ");
         return roleDesc;
     }
 
@@ -95,9 +96,9 @@ public class Role extends MagicObject implements Comparable<Role> {
         // Convert to lower case so case doesn't matter.
         roleDesc = roleDesc.toLowerCase();
         // Fix spelling mistakes in "hypothetical".
-        roleDesc = RegExUtils.replaceAll(roleDesc, HYPO_WORD_PATTERN, "hypothetical");
+        roleDesc = RegExUtils.replaceAll((CharSequence) roleDesc, HYPO_WORD_PATTERN, "hypothetical");
         // Remove extra spaces and quotes.
-        roleDesc = RegExUtils.replaceAll(roleDesc, CR_PATTERN, " ");
+        roleDesc = RegExUtils.replaceAll((CharSequence) roleDesc, CR_PATTERN, " ");
         roleDesc = roleDesc.trim();
         if (roleDesc.startsWith("\"")) {
             roleDesc = roleDesc.substring(1);
@@ -105,7 +106,7 @@ public class Role extends MagicObject implements Comparable<Role> {
         if (roleDesc.endsWith("\"")) {
             roleDesc = StringUtils.chop(roleDesc);
         }
-        roleDesc = RegExUtils.replaceAll(roleDesc, SPACE_PATTERN, " ");
+        roleDesc = RegExUtils.replaceAll((CharSequence) roleDesc, SPACE_PATTERN, " ");
         return roleDesc;
     }
 

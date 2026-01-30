@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * This is a simple, iterable line reader than can be directly created from a file or a stream.
@@ -80,7 +81,7 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
      * @throws IOException
      */
     public static Set<String> readSet(File inFile) throws IOException {
-        return new HashSet<String>(readList(inFile));
+        return new HashSet<>(readList(inFile));
     }
 
     /**
@@ -94,7 +95,7 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
      * @throws IOException
      */
     public static List<String> readList(File inFile) throws IOException {
-        List<String> retVal = new ArrayList<String>();
+        List<String> retVal = new ArrayList<>();
         try (LineReader reader = new LineReader(inFile)) {
             for (String line : reader) {
                 String value = StringUtils.substringBefore(line, "\t");
@@ -196,9 +197,9 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
 
         // FIELDS
         /** end-of-section marker string */
-        private String marker;
+        private final String marker;
         /** field delimiter */
-        private String delim;
+        private final String delim;
 
         /**
          * Construct an iterable for the next section of this file.
@@ -237,9 +238,9 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
         /** TRUE if we have consumed an end-of-section marker */
         private boolean completed;
         /** end-of-section marker */
-        private String marker;
+        private final String marker;
         /** field delimiter */
-        private String delim;
+        private final String delim;
 
         /**
          * Construct a new iterator.
@@ -280,7 +281,7 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
          * @param line	line to check
          */
         public boolean isMarker(String line) {
-            return StringUtils.equals(line, this.marker);
+            return Strings.CS.equals(line, this.marker);
         }
 
         @Override
@@ -308,7 +309,8 @@ public class LineReader implements Iterable<String>, Iterator<String>, AutoClose
      * @param marker	end-of-section marker string (cannot be NULL)
      */
     public void skipSection(String marker) {
-        while (this.hasNext() && ! this.next().contentEquals(marker));
+        // Note that this.next() is moving the cursor.
+        while (this.hasNext() && ! this.next().contentEquals(marker)) { }
     }
 
 }

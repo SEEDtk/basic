@@ -9,13 +9,13 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.theseed.json.JsonListInputStream;
 
 /**
@@ -416,7 +416,7 @@ public abstract class FieldInputStream implements AutoCloseable, Iterable<FieldI
      */
     public static boolean isName(String name, String fieldName) {
         String lcName = name.toLowerCase();
-        return name.equals(fieldName) || StringUtils.endsWith(fieldName, "." + lcName);
+        return name.equals(fieldName) || Strings.CS.endsWith(fieldName, "." + lcName);
     }
 
     /**

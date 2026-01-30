@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.theseed.basic.ParseFailureException;
 import org.theseed.io.FieldInputStream;
 import org.theseed.roles.RoleUtilities;
@@ -30,26 +31,26 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
     private int typeColIdx;
     /** map of protein abbreviations to names for tRNA */
     private static final Map<String, String> AMINO_ACIDS = Map.ofEntries(
-            new AbstractMap.SimpleEntry<String, String>("Ala", "Alanine"),
-            new AbstractMap.SimpleEntry<String, String>("Arg", "Arginine"),
-            new AbstractMap.SimpleEntry<String, String>("Asn", "Asparagine"),
-            new AbstractMap.SimpleEntry<String, String>("Asp", "Aspartic acid"),
-            new AbstractMap.SimpleEntry<String, String>("Cys", "Cysteine"),
-            new AbstractMap.SimpleEntry<String, String>("Glu", "Glutamic acid"),
-            new AbstractMap.SimpleEntry<String, String>("Gln", "Glutamine"),
-            new AbstractMap.SimpleEntry<String, String>("Gly", "Glycine"),
-            new AbstractMap.SimpleEntry<String, String>("His", "Histidine"),
-            new AbstractMap.SimpleEntry<String, String>("Ile", "Isoleucine"),
-            new AbstractMap.SimpleEntry<String, String>("Leu", "Leucine"),
-            new AbstractMap.SimpleEntry<String, String>("Lys", "Lysine"),
-            new AbstractMap.SimpleEntry<String, String>("Met", "Methionine"),
-            new AbstractMap.SimpleEntry<String, String>("Phe", "Phenylalanine"),
-            new AbstractMap.SimpleEntry<String, String>("Pro", "Proline"),
-            new AbstractMap.SimpleEntry<String, String>("Ser", "Serine"),
-            new AbstractMap.SimpleEntry<String, String>("Thr", "Threonine"),
-            new AbstractMap.SimpleEntry<String, String>("Trp", "Tryptophan"),
-            new AbstractMap.SimpleEntry<String, String>("Tyr", "Tyrosine"),
-            new AbstractMap.SimpleEntry<String, String>("Val", "Valine"));
+            new AbstractMap.SimpleEntry<>("Ala", "Alanine"),
+            new AbstractMap.SimpleEntry<>("Arg", "Arginine"),
+            new AbstractMap.SimpleEntry<>("Asn", "Asparagine"),
+            new AbstractMap.SimpleEntry<>("Asp", "Aspartic acid"),
+            new AbstractMap.SimpleEntry<>("Cys", "Cysteine"),
+            new AbstractMap.SimpleEntry<>("Glu", "Glutamic acid"),
+            new AbstractMap.SimpleEntry<>("Gln", "Glutamine"),
+            new AbstractMap.SimpleEntry<>("Gly", "Glycine"),
+            new AbstractMap.SimpleEntry<>("His", "Histidine"),
+            new AbstractMap.SimpleEntry<>("Ile", "Isoleucine"),
+            new AbstractMap.SimpleEntry<>("Leu", "Leucine"),
+            new AbstractMap.SimpleEntry<>("Lys", "Lysine"),
+            new AbstractMap.SimpleEntry<>("Met", "Methionine"),
+            new AbstractMap.SimpleEntry<>("Phe", "Phenylalanine"),
+            new AbstractMap.SimpleEntry<>("Pro", "Proline"),
+            new AbstractMap.SimpleEntry<>("Ser", "Serine"),
+            new AbstractMap.SimpleEntry<>("Thr", "Threonine"),
+            new AbstractMap.SimpleEntry<>("Trp", "Tryptophan"),
+            new AbstractMap.SimpleEntry<>("Tyr", "Tyrosine"),
+            new AbstractMap.SimpleEntry<>("Val", "Valine"));
     /** split pattern for rRNAs */
     private static final Pattern RNA_SPLITTER = Pattern.compile("(?:\\s+#+|;)\\s+");
     /** RNA string finder for rRNAs */
@@ -96,23 +97,13 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
         String type = line.get(this.typeColIdx);
         String retVal;
         // Each type has a different approach.
-        switch (type) {
-        case "tRNA" :
-            retVal = this.processTRna(product);
-            break;
-        case "rRNA" :
-            retVal = this.processRRna(product);
-            break;
-        case "misc_RNA" :
-            retVal = this.processMiscRna(product);
-            break;
-        case "CDS" :
-            retVal = this.processProtein(product);
-            break;
-        default :
-            retVal = this.processOther(type);
-            break;
-        }
+        retVal = switch (type) {
+            case "tRNA" -> this.processTRna(product);
+            case "rRNA" -> this.processRRna(product);
+            case "misc_RNA" -> this.processMiscRna(product);
+            case "CDS" -> this.processProtein(product);
+            default -> this.processOther(type);
+        };
         return retVal;
     }
 
@@ -136,19 +127,10 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
     public static String prefixArticle(String phrase) {
         // Compute the article.
         String article;
-        switch (Character.toLowerCase(phrase.charAt(0))) {
-        case 'a' :
-        case 'e' :
-        case 'i' :
-        case 'o' :
-        case 'u' :
-        case '8' :
-            article = "an";
-            break;
-        default :
-            article = "a";
-            break;
-        }
+        article = switch (Character.toLowerCase(phrase.charAt(0))) {
+            case 'a', 'e', 'i', 'o', 'u', '8' -> "an";
+            default -> "a";
+        };
         return article + " " + phrase;
     }
 
@@ -265,9 +247,9 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
      * @return a text description of the product
      */
     private String processProtein(String product) {
-        StringBuffer retVal = new StringBuffer(product.length() * 2);
+        StringBuilder retVal = new StringBuilder(product.length() * 2);
         // Check for the null case.
-        if (StringUtils.isBlank(product) || StringUtils.equalsIgnoreCase(product, "hypothetical protein"))
+        if (StringUtils.isBlank(product) || Strings.CI.equals(product, "hypothetical protein"))
             retVal.append("a hypothetical protein");
         else {
             // Strip off the comment.
@@ -301,7 +283,7 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
      * @return a descriptive phrase for the domain product (most commonly the domain string itself)
      */
     private String interpretDomain(String domainString) {
-        StringBuffer retVal = new StringBuffer(domainString.length() * 2);
+        StringBuilder retVal = new StringBuilder(domainString.length() * 2);
         // We need to split by "; ".  If we only have one piece, then the product is unambiguous.
         String[] pieces = StringUtils.splitByWholeSeparator(domainString, "; ");
         if (pieces.length > 1) {
@@ -331,7 +313,7 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
      * @return a descriptive phrase for the function (most commonly the function string itself)
      */
     private String interpretFunction(String functionString) {
-        StringBuffer retVal = new StringBuffer(functionString.length() * 2);
+        StringBuilder retVal = new StringBuilder(functionString.length() * 2);
         // Try the @-split.
         String[] pieces = StringUtils.splitByWholeSeparator(functionString, " @ ");
         // A singleton is returned unchanged.
@@ -340,7 +322,7 @@ public class GeneProductCommand extends PrimitiveTemplateCommand {
         else if (pieces.length == 2 && DESCRIPTIVE.matcher(pieces[1]).matches()) {
             // Here we have a descriptive string for the role.
             retVal.append(this.interpretRole(pieces[0])).append( "(").append(pieces[1]).append(")");
-        } else if (pieces.length == 2 && StringUtils.startsWith(pieces[1], pieces[0])) {
+        } else if (pieces.length == 2 && Strings.CS.startsWith(pieces[1], pieces[0])) {
             // Here we have a generic function followed by an identical detailed one.
             retVal.append(this.interpretRole(pieces[1]));
         } else {

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Iterator;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.theseed.io.LineReader;
 
 import com.github.cliftonlabs.json_simple.JsonException;
@@ -21,9 +21,9 @@ public class JsonListIterator implements AutoCloseable, Iterator<JsonObject> {
 
     // FIELDS
     /** input line reader */
-    private LineReader inStream;
+    private final LineReader inStream;
     /** current JSON token buffer */
-    private StringBuilder tokenBuffer;
+    private final StringBuilder tokenBuffer;
     /** current line number */
     private int lineCount;
     /** next record to return, or NULL if we are at the end */
@@ -87,9 +87,9 @@ public class JsonListIterator implements AutoCloseable, Iterator<JsonObject> {
             retVal = null;
         } else {
             // Skip past the comma (if any).
-            if (StringUtils.equals(token, ","))
+            if (Strings.CS.equals(token, ","))
                 token = this.getNextToken();
-            if (StringUtils.equals(token, "]")) {
+            if (Strings.CS.equals(token, "]")) {
                 // Here the next record is the actual end of the list.
                 retVal = null;
                 this.tokenizer = null;

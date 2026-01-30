@@ -65,15 +65,16 @@ public class Function extends MagicObject {
      *
      * @param funDesc	function description to normalize
      */
+    @Override
     protected String normalize(String funDesc) {
         String retVal = RoleUtilities.commentFree(funDesc);
         // Remove all the EC and TC numbers.
-        retVal = RegExUtils.replaceAll(retVal, EC_PATTERN, " ");
-        retVal = RegExUtils.replaceAll(retVal, TC_PATTERN, " ");
+        retVal = RegExUtils.replaceAll((CharSequence) retVal, EC_PATTERN, " ");
+        retVal = RegExUtils.replaceAll((CharSequence) retVal, TC_PATTERN, " ");
         // Fix common spelling and punctuation errors.
         retVal = Role.fixSpelling(retVal);
         // Remove any leftover spaces or extra punctuation.
-        retVal = RegExUtils.replaceAll(retVal, Role.EXTRA_SPACES, " ");
+        retVal = RegExUtils.replaceAll((CharSequence) retVal, Role.EXTRA_SPACES, " ");
         // Return the normalized result.
         return retVal;
     }
@@ -102,7 +103,7 @@ public class Function extends MagicObject {
      */
     public static class ByName implements Comparator<Function> {
 
-        private NaturalSort sorter;
+        private final NaturalSort sorter;
 
         public ByName() {
             this.sorter = new NaturalSort();
