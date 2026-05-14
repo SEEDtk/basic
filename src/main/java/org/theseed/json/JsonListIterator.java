@@ -124,7 +124,8 @@ public class JsonListIterator implements AutoCloseable, Iterator<JsonObject> {
                 }
                 // We have our record in the token buffer. Convert it to JSON.
                 try {
-                    retVal = (JsonObject) Jsoner.deserialize(this.tokenBuffer.toString());
+                    token = this.tokenBuffer.toString();
+                    retVal = (JsonObject) Jsoner.deserialize(token);
                 } catch (JsonException e) {
                     // Convert a JSON error to an IO exception.
                     throw new IOException("JSON error during conversion before line " + lineCount + ": " + e.toString());

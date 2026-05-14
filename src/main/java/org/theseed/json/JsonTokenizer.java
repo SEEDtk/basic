@@ -70,18 +70,16 @@ public class JsonTokenizer implements Iterable<String> {
             while (this.pos < n && ! closed) {
                 char c = line.charAt(this.pos);
                 switch (c) {
-                case '\\' :
+                case '\\' -> {
                     // Here we have a backslash, so we need to push the next character regardless of what it is.
                     this.buffer.append(c);
                     this.pos++;
                     if (this.pos >= n)
                         throw new IOException("Invalid escape sequence at end of string in line " + this.lineNumber + ".");
                     c = line.charAt(this.pos);
-                    break;
-                case '"' :
-                    // Here we have the close quote.
+                    }
+                case '"' -> // Here we have the close quote.
                     closed = true;
-                    break;
                 }
                 this.buffer.append(c);
                 this.pos++;
@@ -90,6 +88,12 @@ public class JsonTokenizer implements Iterable<String> {
             String retVal = this.buffer.toString();
             this.buffer.setLength(0);
             return retVal;
+        }
+
+        @Override
+        protected String parseUnquoted(char c) {
+            // In raw mode, we don't convert NULL to an empty string.
+            return super.getUnquoted(c);
         }
 
     }
@@ -105,7 +109,7 @@ public class JsonTokenizer implements Iterable<String> {
     public JsonTokenizer(String line, int lineNum) throws IOException {
         this.lineNumber = lineNum;
         // Create the token list.
-        this.tokens = new ArrayList<String>();
+        this.tokens = new ArrayList<>();
         // Set up to parse the line.
         this.line = line;
         final int n = line.length();
@@ -121,23 +125,17 @@ public class JsonTokenizer implements Iterable<String> {
                 // Here we have an unquoted token
                 this.tokens.add(this.parseUnquoted(c));
             } else switch (c) {
-            case '"' :
+            case '"' -> {
                 // Here we have a string.
                 String tokenString = this.parseString();
                 this.tokens.add(tokenString);
-                break;
-            case '[' :
-            case ']' :
-            case ',' :
-            case ':' :
-            case '{' :
-            case '}' :
+                }
+            case '[', ']', ',', ':', '{', '}' -> {
                 // Here we have a delimiter.
                 this.tokens.add(Character.toString(c));
                 this.pos++;
-                break;
-            default :
-                // Here we have an invalid character.  Get its context.
+                }
+            default -> // Here we have an invalid character.  Get its context.
                 throw new IOException("Invalid character in JSON stream on line " + this.lineNumber + ".");
             }
         }
@@ -160,19 +158,18 @@ public class JsonTokenizer implements Iterable<String> {
         while (this.pos < n && ! closed) {
             char c = line.charAt(this.pos);
             switch (c) {
-            case '\\' :
-                // Here we have a backslash, so we need to parse the escape.
+            case '\\' -> // Here we have a backslash, so we need to parse the escape.
                 this.parseEscape();
-                break;
-            case '"' :
+            case '"' -> {
                 // Here we have the close quote.
                 closed = true;
                 this.pos++;
-                break;
-            default :
+                }
+            default -> {
                 // Here we have an ordinary character.
                 this.buffer.append(c);
                 this.pos++;
+                }
             }
         }
         String retVal = this.buffer.toString();
@@ -192,33 +189,31 @@ public class JsonTokenizer implements Iterable<String> {
             throw new IOException("Escape character at end of line " + this.lineNumber + ".");
         char c2 = line.charAt(this.pos);
         switch (c2) {
-        case '\\' :
-        case '"' :
-        case '/' :
+        case '\\', '"', '/' -> {
             this.buffer.append(c2);
             this.pos++;
-            break;
-        case 'b' :
+            }
+        case 'b' -> {
             this.buffer.append("\b");
             this.pos++;
-            break;
-        case 'f' :
+            }
+        case 'f' -> {
             this.buffer.append("\f");
             this.pos++;
-            break;
-        case 'n' :
+            }
+        case 'n' -> {
             this.buffer.append("\n");
             this.pos++;
-            break;
-        case 'r' :
+            }
+        case 'r' -> {
             this.buffer.append("\r");
             this.pos++;
-            break;
-        case 't' :
+            }
+        case 't' -> {
             this.buffer.append("\t");
             this.pos++;
-            break;
-        case 'u' :
+            }
+        case 'u' -> {
             this.pos++;
             int end = this.pos + 4;
             if (end >=  n)
@@ -231,9 +226,8 @@ public class JsonTokenizer implements Iterable<String> {
                         + this.lineNumber + ".");
             }
             this.pos = end;
-            break;
-        default :
-            throw new IOException("Invalid escape sequence in quoted string on line " + this.lineNumber + ".");
+            }
+        default -> throw new IOException("Invalid escape sequence in quoted string on line " + this.lineNumber + ".");
         }
     }
 
@@ -246,7 +240,24 @@ public class JsonTokenizer implements Iterable<String> {
      *
      * @return the unquoted token string
      */
-    private String parseUnquoted(char c) {
+    protected String parseUnquoted(char c) {
+        String retVal = getUnquoted(c);
+        // We need to handle the special case of the unquoted token "null".  We never want to see this,
+        // but we encode it as an empty string.
+        if (retVal.contentEquals("null"))
+            retVal = "";
+        return retVal;
+    }
+
+    /**
+     * This performs the actual parsing of an unquoted token.  It is presumed the current position is on the first 
+     * character, which is passed in.
+     * 
+     * @param c		first character of unquoted token
+     *
+     * @return the unquoted token string
+     */
+    protected String getUnquoted(char c) {
         this.buffer.append(c);
         this.pos++;
         final int n = line.length();
@@ -264,10 +275,6 @@ public class JsonTokenizer implements Iterable<String> {
         }
         String retVal = this.buffer.toString();
         this.buffer.setLength(0);
-        // We need to handle the special case of the unquoted token "null".  We never want to see this,
-        // but we encode it as an empty string.
-        if (retVal.contentEquals("null"))
-            retVal = "";
         return retVal;
     }
 

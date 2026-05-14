@@ -176,7 +176,7 @@ public class JsonListInputStream extends FieldInputStream {
      * @throws IOException
      */
     private List<String> parseList() throws IOException {
-        List<String> retVal = new ArrayList<String>();
+        List<String> retVal = new ArrayList<>();
         // We expect string, comma, string, comma, ... string, close-bracket.
         String element = this.getNextToken();
         // Handle the special case of an empty list.
