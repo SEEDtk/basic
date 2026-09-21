@@ -3,10 +3,6 @@
  */
 package org.theseed.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +10,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,7 +36,7 @@ class TestReaders {
         InputStream inStream = new FileInputStream(new File("data", "lines.txt"));
         try (LineReader reader = new LineReader(inStream)) {
             assertThat(reader.hasNext(), equalTo(true));
-            List<String> lines = new ArrayList<String>(5);
+            List<String> lines = new ArrayList<>(5);
             for (String line : reader)
                 lines.add(line);
             assertThat(lines.size(), equalTo(3));
@@ -49,6 +47,7 @@ class TestReaders {
         File badFile = new File("data", "nosuchfile.bad");
         try (LineReader reader = new LineReader(badFile)) {
             assertThat("Opened an invalid file.", false, equalTo(true));
+            reader.close();
         } catch (IOException e) {
             assertThat(true, equalTo(true));
         }
