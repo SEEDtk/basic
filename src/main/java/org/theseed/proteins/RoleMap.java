@@ -6,6 +6,7 @@ package org.theseed.proteins;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,14 +53,12 @@ public class RoleMap extends MagicMap<Role> {
      * @param saveFile	file to contain a text representation of the role map
      */
     public void save(File saveFile) {
-        try {
-            PrintWriter printer = new PrintWriter(saveFile);
+        try (PrintWriter printer = new PrintWriter(saveFile)) {
             for (Role role : this.objectValues()) {
                 printer.format("%s\tx\t%s%n", role.getId(), role.getName());
             }
-            printer.close();
         } catch (IOException e) {
-            throw new RuntimeException("Error saving role map.", e);
+            throw new UncheckedIOException("Error saving role map.", e);
         }
     }
 
